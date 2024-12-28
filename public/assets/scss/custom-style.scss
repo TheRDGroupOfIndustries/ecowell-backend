@@ -1,0 +1,50 @@
+$theme-deafult: #399B2E;
+
+.dangerBtn {
+    background-color: #fff !important;
+    color: #ff0000;
+    border: 1px solid #ff0000 !important;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    &:hover {
+        background-color: #ff0000 !important;
+        color: #fff;
+        opacity: 0.8;
+    }
+}
+.flavourInstance{
+    display: "flex-inline";
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: fit-content;
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover {
+        background-color: #f5f5f5;
+    }
+}
+.activeFlavourInstance{
+    border: 1px solid $theme-deafult;
+    color: $theme-deafult;
+}
+
+.detailsList{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+     
+    & li{
+        display: list-item;
+        list-style-type: disc;
+    }
+}

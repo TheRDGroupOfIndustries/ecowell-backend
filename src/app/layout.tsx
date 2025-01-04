@@ -4,15 +4,15 @@ import { Inter } from "next/font/google";
 import { connectToMongoDB } from "@/lib/db";
 import { ToastContainer } from "react-toastify";
 import MainProvider from "@/MainProvider";
-import "../index.scss";
 import AuthProvider from "@/lib/SessionProvider";
+import "../index.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "EcoWell - Admin",
   description: "Get Yourself some protines",
-  icons: { icon: "/logo.webp" },
+  icons: { icon: "./favicon.ico" },
   keywords: "protine, protines, healthy protines, suppliments",
 };
 

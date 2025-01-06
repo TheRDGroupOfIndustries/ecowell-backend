@@ -3,7 +3,7 @@ import { Box, MessageSquare, Navigation, Users } from "react-feather";
 export const TopDashboardCardsData = [
   {
     id: 1,
-    type: "Earnings",
+    type: "Revenue",
     bgColor: "bg-warning",
     count: 6659,
     label: "This Month",
@@ -12,11 +12,11 @@ export const TopDashboardCardsData = [
   },
   {
     id: 2,
-    type: "Products",
+    type: "Supplements",
     bgColor: "bg-secondary",
     icon: <Box className="font-secondary" />,
-    count: 9856,
-    label: "This Month",
+    count: 156,
+    label: "Total Products",
     href: "/en/products/digital/digital-product-list",
   },
   {
@@ -24,17 +24,17 @@ export const TopDashboardCardsData = [
     type: "Orders",
     bgColor: "bg-primary",
     icon: <MessageSquare className="font-primary" />,
-    count: 8933,
+    count: 933,
     label: "This Month",
     href: "/en/sales/orders",
   },
   {
     id: 4,
-    type: "Users",
+    type: "Customers",
     bgColor: "bg-danger",
     icon: <Users className="font-danger" />,
-    count: 45631,
-    label: "This Month",
+    count: 1631,
+    label: "Active Users",
     href: "/en/users/list-user",
   },
 ];
@@ -329,11 +329,11 @@ export const EmployeeChartOptions: any = {
 };
 
 export const SalesStatusCountry = [
-  { country: "Saint Lucia", amount: 157, color: "primary" },
-  { country: "Kenya", amount: 347, color: "secondary" },
-  { country: "Liberia", amount: 468, color: "danger" },
-  { country: "Christmas Island", amount: 742, color: "warning" },
-  { country: "Saint Helena", amount: 647, color: "success" },
+  { country: "United States", amount: 457, color: "primary" },
+  { country: "Canada", amount: 347, color: "secondary" },
+  { country: "United Kingdom", amount: 268, color: "danger" },
+  { country: "Australia", amount: 242, color: "warning" },
+  { country: "Germany", amount: 147, color: "success" },
 ];
 
 export const EmployeeStatusData = [

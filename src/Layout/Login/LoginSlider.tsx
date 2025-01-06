@@ -14,14 +14,36 @@ const LoginSlider = () => {
     <Col md="5" className="p-0 card-left">
       <Card className="bg-primary">
         <div className="svg-icon">
-          <Image height={78} width={78} alt="" src={stats} className="Img-fluid" />
+          <Image
+            height={80}
+            width={80}
+            alt="Ecowell Logo"
+            src="/ecowell-logo.png"
+            className="Img-fluid"
+          />
         </div>
         <Slider className="single-item" {...settings}>
-          {[...Array(3)].map((_, i) => (
+          {[
+            {
+              title: "Welcome to Ecowell",
+              description:
+                "Manage your eco-friendly products, orders, and inventory all in one place.",
+            },
+            {
+              title: "Powerful Analytics",
+              description:
+                "Track sales performance, customer behavior, and sustainable product trends with ease.",
+            },
+            {
+              title: "Streamlined Operations",
+              description:
+                "Handle shipping, returns, and customer support efficiently while promoting environmental responsibility.",
+            },
+          ].map((slide, i) => (
             <div key={i}>
               <div>
-                <h3>Ecowell - Admin</h3>
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy.</p>
+                <h3>{slide.title}</h3>
+                <p>{slide.description}</p>
               </div>
             </div>
           ))}

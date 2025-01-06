@@ -8,12 +8,22 @@ const TotalSales = () => {
     <Col xl="3 xl-50" md="6">
       <Card className=" order-graph sales-carousel">
         <CardHeader>
-          <h6>Total Sales</h6>
+          <h6>Total Supplement Sales</h6>
           <Row>
             <Col xs="6">
               <div className="small-chartjs">
-                <div className="flot-chart-placeholder" id="simple-line-chart-sparkline-3">
-                  <Chart height={"60px"} chartType="LineChart" loader={<div>Loading Chart</div>} data={TotalSalesData} options={TotalSalesOptions} legend_toggle />
+                <div
+                  className="flot-chart-placeholder"
+                  id="simple-line-chart-sparkline-3"
+                >
+                  <Chart
+                    height={"60px"}
+                    chartType="LineChart"
+                    loader={<div>Loading Chart</div>}
+                    data={TotalSalesData}
+                    options={TotalSalesOptions}
+                    legend_toggle
+                  />
                 </div>
               </div>
             </Col>
@@ -32,16 +42,19 @@ const TotalSales = () => {
         <CardBody>
           <Media>
             <Media body>
-              <span>Sales Last Month</span>
-              <h2 className="mb-0">9054</h2>
+              <span>Supplement Sales</span>
+              <h2 className="mb-0">3854</h2>
               <p>
-                0.25%
+                0.85%
                 <span>
                   <i className="fa fa-angle-up"></i>
                 </span>
               </p>
-              <h5 className="f-w-600 f-16">Gross sales of August</h5>
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting</p>
+              <h5 className="f-w-600 f-16">Monthly Revenue Analysis</h5>
+              <p>
+                Strong growth in premium protein supplements and wellness
+                products
+              </p>
             </Media>
             <div className="bg-primary b-r-8">
               <div className="small-box">

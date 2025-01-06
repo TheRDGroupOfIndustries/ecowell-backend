@@ -8,7 +8,8 @@ const Notification = () => {
     <Fragment>
       <ul className="notification-dropdown onhover-show-div p-0">
         <li>
-          Notification <span className="badge rounded-pill badge-primary pull-right">3</span>
+          Notification{" "}
+          <span className="badge rounded-pill badge-primary pull-right">3</span>
         </li>
         <li>
           <Media>
@@ -19,7 +20,10 @@ const Notification = () => {
                 </span>
                 Your order ready for Ship..!
               </h6>
-              <p className="mb-0">Lorem ipsum dolor sit amet, consectetuer.</p>
+              <p className="mb-0">
+                Your protein supplements order has been packed and is ready for
+                shipping.
+              </p>
             </Media>
           </Media>
         </li>
@@ -32,7 +36,10 @@ const Notification = () => {
                 </span>
                 Download Complete
               </h6>
-              <p className="mb-0">Lorem ipsum dolor sit amet, consectetuer.</p>
+              <p className="mb-0">
+                Your workout plan and protein intake schedule has been
+                downloaded successfully.
+              </p>
             </Media>
           </Media>
         </li>
@@ -45,7 +52,10 @@ const Notification = () => {
                 </span>
                 250 MB trash files
               </h6>
-              <p className="mb-0">Lorem ipsum dolor sit amet, consectetuer.</p>
+              <p className="mb-0">
+                Clear your nutrition tracking history to free up space in your
+                account.
+              </p>
             </Media>
           </Media>
         </li>

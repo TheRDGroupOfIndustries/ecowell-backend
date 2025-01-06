@@ -10,7 +10,10 @@ const Footer = () => {
         <Container fluid>
           <Row>
             <Col md="6" className="footer-copyright">
-              <p className="mb-0">Copyright 2022 © Ecowell All rights reserved.</p>
+              <p className="mb-0">
+                Copyright © {new Date().getFullYear()} Ecowell All rights
+                reserved.
+              </p>
             </Col>
             {/* <Col md="6">
               <p className="pull-right mb-0">

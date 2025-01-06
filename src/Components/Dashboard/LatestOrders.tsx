@@ -122,7 +122,9 @@ const LatestOrders = () => {
                 {allOrders.slice(0, 5).map((order, index) => (
                   <tr key={index}>
                     <td>{order.order_id}</td>
-                    <td className="digits">{order.total_price}</td>
+                    <td className="digits">
+                      {order.total_price.toLocaleString()}
+                    </td>
                     <td className="font-danger">{order.payment_method}</td>
                     <td className="digits">{order.order_date}</td>
                     <td className="digits">{order.status}</td>

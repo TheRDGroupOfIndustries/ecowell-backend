@@ -12,8 +12,18 @@ const TotalPurchase = () => {
           <Row>
             <Col xs="6">
               <div className="small-chartjs">
-                <div className="flot-chart-placeholder" id="simple-line-chart-sparkline">
-                  <Chart height={"60px"} chartType="LineChart" loader={<div>Loading Chart</div>} data={TotalPurchaseData} options={TotalPurchaseOptions} legend_toggle />
+                <div
+                  className="flot-chart-placeholder"
+                  id="simple-line-chart-sparkline"
+                >
+                  <Chart
+                    height={"60px"}
+                    chartType="LineChart"
+                    loader={<div>Loading Chart</div>}
+                    data={TotalPurchaseData}
+                    options={TotalPurchaseOptions}
+                    legend_toggle
+                  />
                 </div>
               </div>
             </Col>
@@ -41,7 +51,10 @@ const TotalPurchase = () => {
                 </span>
               </p>
               <h5 className="f-w-600 f-16">Avg Gross purchase</h5>
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting</p>
+              <p>
+                Total protein supplement purchases show steady growth in
+                customer demand and market performance
+              </p>
             </Media>
             <div className="bg-secondary b-r-8">
               <div className="small-box">

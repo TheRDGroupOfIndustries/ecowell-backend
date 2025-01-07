@@ -103,7 +103,7 @@ const LatestOrders = () => {
   //   );
 
   return (
-    <Col xl="6 xl-100">
+    // <Col xl="6 xl-100">
       <Card>
         <CommonCardHeader title="Latest Orders" />
         <CardBody>
@@ -138,7 +138,7 @@ const LatestOrders = () => {
           </div>
         </CardBody>
       </Card>
-    </Col>
+    // </Col>
   );
 };
 

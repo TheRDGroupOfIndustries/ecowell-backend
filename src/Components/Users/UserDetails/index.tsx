@@ -6,6 +6,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Card, CardBody, Col, Container, Row } from "reactstrap";
 import CommonBreadcrumb from "@/CommonComponents/CommonBreadcrumb";
 import TabProfile from "./TabProflle";
+import Image from "next/image";
 
 const UserDetail = ({ _id }: { _id: string }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -35,9 +36,11 @@ const UserDetail = ({ _id }: { _id: string }) => {
               <Card>
                 <CardBody>
                   <div className="profile-details text-center">
-                    <img
+                    <Image
                       src={user?.profile_image || ""}
                       alt=""
+                      width={200}
+                      height={200}
                       className="img-fluid img-90 rounded-circle blur-up lazyloaded"
                     />
                     <h5 className="f-w-600 f-16 mb-0">

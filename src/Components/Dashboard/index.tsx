@@ -51,16 +51,16 @@ const DashboardContainer = () => {
       <Container fluid>
         <Row>
           <TopDashboardCards />
-          <MarketValue />
+          {/* <MarketValue /> */}
           <LatestOrders />
-          <TotalSales />
-          <TotalPurchase />
-          <TotalCash />
-          <DailyDeposits />
-          <BuySell />
-          <ProductCart />
-          <EmployeeStatus />
-          <SalesStatus />
+          {/* <TotalSales /> */}
+          {/* <TotalPurchase /> */}
+          {/* <TotalCash /> */}
+          {/* <DailyDeposits /> */}
+          {/* <BuySell /> */}
+          {/* <ProductCart /> */}
+          {/* <EmployeeStatus /> */}
+          {/* <SalesStatus /> */}
         </Row>
       </Container>
     </Fragment>

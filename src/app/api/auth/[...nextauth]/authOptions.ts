@@ -13,12 +13,13 @@ import Admin from "@/models/Admin";
 
 interface CustomUser extends AuthUser {
   _id: string;
-  email: string;
+  email?: string;
+  phone_number?: number;
 }
 interface CustomToken extends Record<string, any> {
   user?: CustomUser;
 }
-interface UserSession extends NextAuthSession {
+export interface UserSession extends NextAuthSession {
   user: AdminValues;
 }
 
@@ -143,13 +144,18 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       await connectToMongoDB();
       if ((token as CustomToken).user) {
-        const userExists = await Admin.findOne({
-          email: (token as CustomToken).user?.email,
-        });
+        const query = (token as CustomToken).user?.phone_number
+          ? { phone_number: (token as CustomToken).user?.phone_number }
+          : { email: (token as CustomToken).user?.email };
+
+        // console.log("Query:", query, token);
+
+        const userExists = await Admin.findOne(query);
         if (userExists) {
           session.user = userExists;
         }
       }
+      // console.log("session:", session);
       return session as UserSession;
     },
   },

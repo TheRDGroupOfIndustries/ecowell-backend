@@ -473,7 +473,7 @@ const Datatable = ({
             <div style={{ textAlign: "center" }}>
               <Image
                 src={row[key]}
-                alt="Product Image"
+                alt="Image"
                 width={100}
                 height={80}
                 style={{ width: "60px", height: "60px", objectFit: "cover" }}

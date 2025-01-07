@@ -16,7 +16,7 @@ import {
   InputGroupText,
   Label,
 } from "reactstrap";
-import SocialMediaIcons from "./SocialMediaIcons";
+// import SocialMediaIcons from "./SocialMediaIcons";
 
 export const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const passwordPattern =
@@ -127,7 +127,7 @@ const LoginForm = () => {
           otp,
           password,
         });
-        console.log("res:", res);
+        // console.log("res:", res);
 
         if (res?.error) {
           if (res.error === "OTP_SENT") {
@@ -137,13 +137,12 @@ const LoginForm = () => {
             setDisableBtn(false);
             return;
           }
-          console.log(res.error);
           setSubmitting(false);
-          throw new Error("User doesn't exist or Invalid e-mail or password!");
+          throw new Error(res.error);
         }
 
         if (res?.url) {
-          console.log(res?.url);
+          // console.log(res?.url);
 
           setSubmitting(true);
           setSuccess(true);
@@ -163,8 +162,11 @@ const LoginForm = () => {
     toast.promise(login(), {
       pending: "Logging in...",
       success: "Logged in successfully!",
-      error: "Something went wrong, please try again!",
-      // error: (error: any) => error.message || 'An error occurred.',
+      error: {
+        render({ data }: { data?: Error }) {
+          return data?.message;
+        },
+      },
     });
   };
 
@@ -187,7 +189,7 @@ const LoginForm = () => {
           <Label className="form-label" for="password">
             Password
           </Label>
-          <InputGroup onClick={() => setShowPassWord(!showPassWord)}>
+          <InputGroup>
             <Input
               required
               onChange={handlePassword}
@@ -196,7 +198,11 @@ const LoginForm = () => {
               placeholder="Password"
             />
             <InputGroupText>
-              {showPassWord ? <Eye /> : <EyeOff />}
+              {showPassWord ? (
+                <Eye onClick={() => setShowPassWord(!showPassWord)} />
+              ) : (
+                <EyeOff onClick={() => setShowPassWord(!showPassWord)} />
+              )}
             </InputGroupText>
           </InputGroup>
         </FormGroup>
@@ -240,10 +246,10 @@ const LoginForm = () => {
           {submitting ? "Logging in..." : success ? "Logged in" : "Login"}
         </Button>
       </div>
-      <div className="form-footer">
+      {/* <div className="form-footer">
         <span>Or Login up with Google</span>
         <SocialMediaIcons />
-      </div>
+      </div> */}
     </Form>
   );
 };

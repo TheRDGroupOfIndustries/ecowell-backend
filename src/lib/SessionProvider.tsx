@@ -26,7 +26,13 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, session }) => {
     if (!currentSession?.user?._id) getCurrentSession();
   }, [currentSession, session]);
 
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+  return (
+    <SessionProvider
+      session={currentSession?.user?._id ? currentSession : session}
+    >
+      {children}
+    </SessionProvider>
+  );
 };
 
 export default AuthProvider;

@@ -150,7 +150,7 @@ export const authOptions: NextAuthOptions = {
 
         // console.log("Query:", query, token);
 
-        const userExists = await Admin.findOne(query);
+        const userExists = await Admin.findOne(query); //.select("-password");
         if (userExists) {
           session.user = userExists;
         }

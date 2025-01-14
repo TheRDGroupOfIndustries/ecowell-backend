@@ -9,7 +9,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { uploadNewFile } from "@/lib/actions/fileUploads";
-import Image from "next/image"; // Add this import
 
 interface Variant {
   flavor: string;
@@ -306,24 +305,22 @@ const AddDigitalProduct = () => {
 
     input.onchange = async (e) => {
       const target = e.target as HTMLInputElement;
-      const file = target.files?.[0];
+      const files = Array.from(target.files || []);
 
-      console.log(file);
-
-      if (file) {
+      if (files.length > 0) {
         setUploading?.(true);
-        const formData = new FormData();
-        formData.append("file", file); // Change 'files' to 'file' and append single file
+        const imagesFormData = new FormData();
+        files.forEach((file) => {
+          imagesFormData.append("files", file);
+        });
 
         try {
-          const imageUrl = (await uploadNewFile(formData)) as string;
-          console.log(imageUrl);
+          const imageUrl = (await uploadNewFile(imagesFormData)) as string;
 
           if (imageUrl) {
             callback(imageUrl);
           }
         } catch (error) {
-          console.error("Error uploading file:", error);
           toast.error("Image upload failed. Please try again later.");
         } finally {
           setUploading?.(false);
@@ -333,12 +330,6 @@ const AddDigitalProduct = () => {
 
     input.click();
   };
-
-  const [uploadingStates, setUploadingStates] = useState({
-    heroBanner: false,
-    lifestyleImage: false,
-    ingredientHighlight: Array(3).fill(false),
-  });
 
   return (
     <Fragment>
@@ -433,45 +424,27 @@ const AddDigitalProduct = () => {
                   <label className="col-form-label pt-0">
                     Background Image
                   </label>
-                  <div className="d-flex gap-2 align-items-center mb-2">
+                  <div className="d-flex gap-2 align-items-center">
+                    {/* <input
+                      className="form-control"
+                      type="text"
+                      value={generalFormState.heroBanner.backgroundImage}
+                      readOnly
+                    /> */}
                     <button
                       className="btn btn-primary"
-                      disabled={uploadingStates.heroBanner}
                       onClick={() =>
-                        handleImageUpload(
-                          (imageUrl) =>
-                            handleGeneralForm("heroBanner", {
-                              ...generalFormState.heroBanner,
-                              backgroundImage: imageUrl,
-                            }),
-                          (loading) =>
-                            setUploadingStates((prev) => ({
-                              ...prev,
-                              heroBanner: loading,
-                            }))
+                        handleImageUpload((imageUrl) =>
+                          handleGeneralForm("heroBanner", {
+                            ...generalFormState.heroBanner,
+                            backgroundImage: imageUrl,
+                          })
                         )
                       }
                     >
-                      {uploadingStates.heroBanner ? "Uploading..." : "Upload"}
+                      Upload
                     </button>
                   </div>
-                  {uploadingStates.heroBanner && (
-                    <div className="text-primary mb-2">Uploading image...</div>
-                  )}
-                  {generalFormState.heroBanner.backgroundImage && (
-                    <div
-                      className="position-relative mt-2"
-                      style={{ height: "200px" }}
-                    >
-                      <Image
-                        src={generalFormState.heroBanner.backgroundImage}
-                        alt="Hero Banner"
-                        fill
-                        className="rounded"
-                        style={{ objectFit: "cover" }}
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -514,47 +487,27 @@ const AddDigitalProduct = () => {
                 </div>
                 <div className="form-group mb-3">
                   <label className="col-form-label pt-0">Lifestyle Image</label>
-                  <div className="d-flex gap-2 align-items-center mb-2">
+                  <div className="d-flex gap-2 align-items-center">
+                    {/* <input
+                      className="form-control"
+                      type="text"
+                      value={generalFormState.dailyRitual.lifestyleImage}
+                      readOnly
+                    /> */}
                     <button
                       className="btn btn-primary"
-                      disabled={uploadingStates.lifestyleImage}
                       onClick={() =>
-                        handleImageUpload(
-                          (imageUrl) =>
-                            handleGeneralForm("dailyRitual", {
-                              ...generalFormState.dailyRitual,
-                              lifestyleImage: imageUrl,
-                            }),
-                          (loading) =>
-                            setUploadingStates((prev) => ({
-                              ...prev,
-                              lifestyleImage: loading,
-                            }))
+                        handleImageUpload((imageUrl) =>
+                          handleGeneralForm("dailyRitual", {
+                            ...generalFormState.dailyRitual,
+                            lifestyleImage: imageUrl,
+                          })
                         )
                       }
                     >
-                      {uploadingStates.lifestyleImage
-                        ? "Uploading..."
-                        : "Upload"}
+                      Upload
                     </button>
                   </div>
-                  {uploadingStates.lifestyleImage && (
-                    <div className="text-primary mb-2">Uploading image...</div>
-                  )}
-                  {generalFormState.dailyRitual.lifestyleImage && (
-                    <div
-                      className="position-relative mt-2"
-                      style={{ height: "200px" }}
-                    >
-                      <Image
-                        src={generalFormState.dailyRitual.lifestyleImage}
-                        alt="Lifestyle"
-                        fill
-                        className="rounded"
-                        style={{ objectFit: "cover" }}
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -614,59 +567,31 @@ const AddDigitalProduct = () => {
                       </div>
                       <div className="form-group mb-3">
                         <label className="col-form-label pt-0">Image</label>
-                        <div className="d-flex gap-2 align-items-center mb-2">
+                        <div className="d-flex gap-2 align-items-center">
+                          {/* <input
+                            className="form-control"
+                            type="text"
+                            value={highlight.image}
+                            readOnly
+                          /> */}
                           <button
                             className="btn btn-primary"
-                            disabled={
-                              uploadingStates.ingredientHighlight[index]
-                            }
                             onClick={() =>
-                              handleImageUpload(
-                                (imageUrl) => {
-                                  const updatedHighlights = [
-                                    ...generalFormState.ingredientHighlights,
-                                  ];
-                                  updatedHighlights[index].image = imageUrl;
-                                  handleGeneralForm(
-                                    "ingredientHighlights",
-                                    updatedHighlights
-                                  );
-                                },
-                                (loading) =>
-                                  setUploadingStates((prev) => ({
-                                    ...prev,
-                                    ingredientHighlight:
-                                      prev.ingredientHighlight.map((state, i) =>
-                                        i === index ? loading : state
-                                      ),
-                                  }))
-                              )
+                              handleImageUpload((imageUrl) => {
+                                const updatedHighlights = [
+                                  ...generalFormState.ingredientHighlights,
+                                ];
+                                updatedHighlights[index].image = imageUrl;
+                                handleGeneralForm(
+                                  "ingredientHighlights",
+                                  updatedHighlights
+                                );
+                              })
                             }
                           >
-                            {uploadingStates.ingredientHighlight[index]
-                              ? "Uploading..."
-                              : "Upload"}
+                            Upload
                           </button>
                         </div>
-                        {uploadingStates.ingredientHighlight[index] && (
-                          <div className="text-primary mb-2">
-                            Uploading image...
-                          </div>
-                        )}
-                        {highlight.image && (
-                          <div
-                            className="position-relative mt-2"
-                            style={{ height: "200px" }}
-                          >
-                            <Image
-                              src={highlight.image}
-                              alt={`Ingredient ${index + 1}`}
-                              fill
-                              className="rounded"
-                              style={{ objectFit: "cover" }}
-                            />
-                          </div>
-                        )}
                       </div>
                       <button
                         className="btn btn-danger"

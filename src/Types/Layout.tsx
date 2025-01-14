@@ -12,6 +12,7 @@ export interface AdminValues {
   phone_number?: string;
   name: string;
   image: string;
+  password?: string;
   createdAt: string;
 }
 

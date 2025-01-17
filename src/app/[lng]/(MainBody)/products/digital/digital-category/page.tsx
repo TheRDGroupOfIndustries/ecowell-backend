@@ -1,4 +1,3 @@
-"use client";
 import CategoryDigital from "@/Components/Products/Digital/CategoryDigital";
 
 const DigitalCategoryContainer = () => {

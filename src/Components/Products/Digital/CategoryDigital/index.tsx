@@ -267,7 +267,6 @@ const CategoriesDigital = () => {
 
   return (
     <Fragment>
-      {Math.random()}
       <CommonBreadcrumb title="Categories" parent="products/digital" />
       <Container fluid>
         <Row>

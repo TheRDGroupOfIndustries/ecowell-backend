@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToMongoDB } from "@/lib/db";
 import Products from "@/models/Products";
 import { generateSlug } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 const generateSequentialSku = async () => {
   const productCount = await Products.countDocuments();
@@ -91,6 +92,7 @@ export const POST = async (request: NextRequest) => {
     const products = await request.json();
 
     if (!Array.isArray(products) || products.length === 0) {
+      revalidatePath(request.url);
       return NextResponse.json(
         { error: "Expected an array of products" },
         { status: 400 }
@@ -163,6 +165,7 @@ export const POST = async (request: NextRequest) => {
 
     if (errors.length > 0) {
       console.warn("Errors during product creation:", errors);
+      revalidatePath(request.url);
       return NextResponse.json(
         {
           message: "Some products failed to save.",
@@ -173,6 +176,7 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    revalidatePath(request.url);
     return NextResponse.json(
       {
         message: `${savedProducts.length} products created successfully!`,
@@ -182,6 +186,7 @@ export const POST = async (request: NextRequest) => {
     );
   } catch (error: any) {
     console.error("Error in product creation:", error);
+    revalidatePath(request.url);
     return NextResponse.json(
       { error: error.message || "An unexpected error occurred." },
       { status: 500 }

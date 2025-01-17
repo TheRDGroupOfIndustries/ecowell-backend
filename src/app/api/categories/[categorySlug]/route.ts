@@ -3,6 +3,7 @@ import { connectToMongoDB } from "@/lib/db";
 import { Categories } from "@/models/Categories";
 import { generateSlug } from "@/lib/utils";
 import Product from "@/models/Products";
+import { revalidatePath } from 'next/cache';
 
 // Helper function to generate a unique slug
 const generateUniqueSlug = async (slug: string) => {
@@ -27,6 +28,7 @@ export const GET = async (request: NextRequest, { params }: { params: { category
 
     const categoryProducts = await Product.find({ "category.slug": categorySlug });
 
+    revalidatePath(request.url);
     return NextResponse.json(categoryProducts, { status: 200 });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -75,6 +77,7 @@ export const PUT = async (request: NextRequest, { params }: { params: { category
 
     await category.save();
 
+    revalidatePath(request.url);
     return NextResponse.json(
       { message: "Category updated successfully!", category },
       { status: 200 }
@@ -112,6 +115,7 @@ export const DELETE = async (request: NextRequest, { params }: { params: { categ
       );
     }
 
+    revalidatePath(request.url);
     return NextResponse.json(
       { message: "Category deleted successfully!" },
       { status: 200 }

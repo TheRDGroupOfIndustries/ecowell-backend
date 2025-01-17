@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToMongoDB } from "@/lib/db";
 import Coupon from "@/models/Coupon";
 
@@ -60,6 +61,8 @@ export const POST = async (request: NextRequest) => {
     });
 
     await newCoupon.save();
+
+    revalidatePath(request.url);
 
     return NextResponse.json({
       message: "Coupon created successfully!",

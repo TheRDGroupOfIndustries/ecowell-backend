@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToMongoDB } from "@/lib/db";
 import Coupon from "@/models/Coupon";
 
@@ -10,6 +11,8 @@ export const GET = async (request: NextRequest) => {
     if (coupons.length === 0) {
       return NextResponse.json({ error: "No coupons found.", status: 404 });
     }
+
+    revalidatePath(request.url);
 
     return NextResponse.json({
       message: "Coupons retrieved successfully!",

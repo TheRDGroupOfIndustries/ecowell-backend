@@ -1,7 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import CommonBreadcrumb from "@/CommonComponents/CommonBreadcrumb";
 import CommonCardHeader from "@/CommonComponents/CommonCardHeader";
 import Datatable from "@/CommonComponents/DataTable";
@@ -35,6 +33,15 @@ interface Category {
   image_link: string;
   slug: string;
 }
+
+// Add these headers configuration
+const axiosConfig = {
+  headers: {
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+    Pragma: "no-cache",
+    Expires: "0",
+  },
+};
 
 const CategoriesDigital = () => {
   const [open, setOpen] = useState(false);
@@ -74,7 +81,8 @@ const CategoriesDigital = () => {
       setEditingCategory(true);
       const response = await axios.put(
         `/api/categories/${newCategory.slug}`,
-        newCategory
+        newCategory,
+        axiosConfig
       );
       toast.success(response.data.message);
       const updatedCategories = categories.map((category) => {
@@ -183,7 +191,8 @@ const CategoriesDigital = () => {
       setCreatingCategory(true);
       const response = await axios.post(
         "/api/categories/create-category",
-        newCategory
+        newCategory,
+        axiosConfig
       );
       toast.success(response.data.message);
       setCategories([...categories, response.data.category]);
@@ -198,7 +207,10 @@ const CategoriesDigital = () => {
 
   const onDelete = async (row: any): Promise<boolean> => {
     try {
-      const response = await axios.delete(`/api/categories/${row.slug}`);
+      const response = await axios.delete(
+        `/api/categories/${row.slug}`,
+        axiosConfig
+      );
       if (response.status === 200) {
         setCategories(
           categories.filter((category) => category.slug !== row.slug)
@@ -228,7 +240,10 @@ const CategoriesDigital = () => {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/categories/all-categories");
+        const response = await axios.get(
+          "/api/categories/all-categories",
+          axiosConfig
+        );
         // console.log("Fetched Categories:", response.data);
         //only title, image_link and slug to show
         let categoriesToShow = response.data.map((category: any) => {
@@ -252,6 +267,7 @@ const CategoriesDigital = () => {
 
   return (
     <Fragment>
+      {Math.random()}
       <CommonBreadcrumb title="Categories" parent="products/digital" />
       <Container fluid>
         <Row>

@@ -2,11 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToMongoDB } from "@/lib/db";
 import Products from "@/models/Products";
 import { generateSlug } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 // Custom error responses
-const errorResponse = (message: string, status: number = 500) => {
+const errorResponse = (
+  message: string,
+  status: number = 500,
+  request: NextRequest
+) => {
   console.log(message);
-
+  revalidatePath(request.url);
   return NextResponse.json(
     {
       success: false,
@@ -74,12 +79,12 @@ export const POST = async (request: NextRequest) => {
     // Basic input validation
     if (!title || !description || !category || !brand || !price) {
       // console.log("Missing required fields");
-      return errorResponse("Missing required fields", 400);
+      return errorResponse("Missing required fields", 400, request);
     }
 
     if (!Array.isArray(variants) || variants.length === 0) {
       // console.log("Missing required fields");
-      return errorResponse("At least one variant is required", 400);
+      return errorResponse("At least one variant is required", 400, request);
     }
 
     // Validate price and salePrice
@@ -87,7 +92,8 @@ export const POST = async (request: NextRequest) => {
       // console.log("Price and sale price must be positive numbers");
       return errorResponse(
         "Price and sale price must be positive numbers",
-        400
+        400,
+        request
       );
     }
 
@@ -95,7 +101,8 @@ export const POST = async (request: NextRequest) => {
       // console.log("Sale price cannot be greater than regular price");
       return errorResponse(
         "Sale price cannot be greater than regular price",
-        400
+        400,
+        request
       );
     }
 
@@ -108,7 +115,8 @@ export const POST = async (request: NextRequest) => {
       // console.log("Directions, ingredients, and benefits must be arrays");
       return errorResponse(
         "Directions, ingredients, and benefits must be arrays",
-        400
+        400,
+        request
       );
     }
 
@@ -133,7 +141,8 @@ export const POST = async (request: NextRequest) => {
       ) {
         return errorResponse(
           "Stock quantity must be a valid non-negative integer for all variants",
-          400
+          400,
+          request
         );
       }
       // Update the variant stock with the converted number
@@ -173,6 +182,7 @@ export const POST = async (request: NextRequest) => {
 
     try {
       const savedProduct = await newProduct.save();
+      revalidatePath(request.url);
       return NextResponse.json(
         {
           success: true,
@@ -184,7 +194,11 @@ export const POST = async (request: NextRequest) => {
     } catch (dbError: any) {
       // Handle MongoDB specific errors
       if (dbError.code === 11000) {
-        return errorResponse("A product with this SKU already exists", 409);
+        return errorResponse(
+          "A product with this SKU already exists",
+          409,
+          request
+        );
       }
       throw dbError; // Re-throw other database errors
     }
@@ -193,20 +207,26 @@ export const POST = async (request: NextRequest) => {
 
     // Handle different types of errors
     if (error.message === "Invalid stock quantity") {
-      return errorResponse("Stock quantity must be a positive number", 400);
+      return errorResponse(
+        "Stock quantity must be a positive number",
+        400,
+        request
+      );
     }
 
     if (error.name === "ValidationError") {
-      return errorResponse(`Validation error: ${error.message}`, 400);
+      return errorResponse(`Validation error: ${error.message}`, 400, request);
     }
 
     if (error.name === "MongoServerError") {
-      return errorResponse("Database error occurred", 500);
+      return errorResponse("Database error occurred", 500, request);
     }
 
+    revalidatePath(request.url);
     return errorResponse(
       "An unexpected error occurred while creating the product",
-      500
+      500,
+      request
     );
   }
 };

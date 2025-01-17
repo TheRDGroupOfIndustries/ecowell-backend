@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToMongoDB } from "@/lib/db";
 import User from "@/models/User";
 
@@ -18,6 +19,7 @@ export const GET = async (
       return new NextResponse("User not found", { status: 404 });
     }
 
+    revalidatePath(request.url);
     return new NextResponse(JSON.stringify(user), { status: 200 });
   } catch (error) {
     console.log(error);

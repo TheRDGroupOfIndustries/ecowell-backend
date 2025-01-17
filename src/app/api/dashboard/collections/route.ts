@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToMongoDB } from "@/lib/db";
 import Product from "@/models/Products";
 import Order from "@/models/Order";
@@ -57,6 +58,9 @@ export const GET = async (request: NextRequest) => {
       users: users.length,
       totalSales: totalSales,
     };
+
+    revalidatePath(request.url);
+
     return NextResponse.json(collectionsLength, { status: 200 });
   } catch (error) {
     console.error("Error retrieving coupons:", error);

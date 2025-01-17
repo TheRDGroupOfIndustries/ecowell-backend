@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToMongoDB } from "@/lib/db";
 import Products from "@/models/Products";
 
@@ -15,6 +16,7 @@ export const DELETE = async (request: NextRequest, { params }: { params: { sku: 
         );
       }
   
+      revalidatePath(request.url);
       return NextResponse.json(
         { message: "Product deleted successfully!" },
         { status: 200 }

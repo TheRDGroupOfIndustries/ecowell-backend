@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToMongoDB } from "@/lib/db";
 import { Categories } from "@/models/Categories";
 import { generateSlug } from "@/lib/utils";
+import { revalidatePath } from 'next/cache';
 
 const generateUniqueSlug = async (slug: string) => {
     let uniqueSlug = slug;
@@ -36,6 +37,7 @@ export const POST = async (request: NextRequest) => {
 
     await newCategory.save();
 
+    revalidatePath(request.url);
     return NextResponse.json(
       { message: "Category created successfully!", category: newCategory },
       { status: 201 },

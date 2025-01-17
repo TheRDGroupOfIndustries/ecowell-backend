@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { connectToMongoDB } from "@/lib/db";
 import Admin from "@/models/Admin";
+import { revalidatePath } from "next/cache";
 
 export const PUT = async (request: NextRequest) => {
   try {
@@ -52,6 +53,8 @@ export const PUT = async (request: NextRequest) => {
       { $set: updates },
       { new: true, runValidators: true }
     ).select("-password");
+
+    revalidatePath(request.url);
 
     return NextResponse.json({
       message: "Profile updated successfully",

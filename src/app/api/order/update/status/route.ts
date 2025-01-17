@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToMongoDB } from "@/lib/db";
 import Order from "@/models/Order";
 
@@ -34,6 +35,7 @@ export const PUT = async (request: NextRequest) => {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
+    revalidatePath(request.url);
     return NextResponse.json(
       { message: "Order status updated successfully", updatedOrder },
       { status: 200 }

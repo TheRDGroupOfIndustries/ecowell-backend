@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToMongoDB } from "@/lib/db";
 import { Categories } from "@/models/Categories";
 
@@ -57,6 +58,7 @@ export const PUT = async (request: NextRequest, { params }:{
       );
     }
 
+    revalidatePath(request.url);
     return NextResponse.json(
       { message: "Category updated successfully!", category: updatedCategory },
       { status: 200 }
@@ -89,6 +91,7 @@ export const DELETE = async (request: NextRequest, { params }:{
       );
     }
 
+    revalidatePath(request.url);
     return NextResponse.json(
       { message: "Category deleted successfully!" },
       { status: 200 }

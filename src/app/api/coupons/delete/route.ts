@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToMongoDB } from "@/lib/db";
 import Coupon from "@/models/Coupon";
 
@@ -24,6 +25,8 @@ export const DELETE = async (request: NextRequest) => {
         );
       }
     }
+
+    revalidatePath(request.url);
 
     return NextResponse.json(
       {

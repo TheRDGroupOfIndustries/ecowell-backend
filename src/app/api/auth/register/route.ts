@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { connectToMongoDB } from "@/lib/db";
 import Admin from "@/models/Admin";
 import { sendOtpToPhone, transporter, verifyOtpFromPhone } from "../../core";
+import { revalidatePath } from "next/cache";
 
 export const POST = async (request: NextRequest) => {
   const { name, email, password, phone_number, isEmail, otp, checkOtpCode } =
@@ -15,11 +16,13 @@ export const POST = async (request: NextRequest) => {
   if (isEmail) {
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
+      revalidatePath(request.url);
       return new NextResponse("Admin already exists!", { status: 400 });
     }
   } else {
     const existingAdmin = await Admin.findOne({ phone_number });
     if (existingAdmin) {
+      revalidatePath(request.url);
       return new NextResponse("Admin already exists!", { status: 400 });
     }
   }
@@ -52,11 +55,13 @@ export const POST = async (request: NextRequest) => {
         const verification = await sendOtpToPhone(phone_number);
 
         if (verification) {
+          revalidatePath(request.url);
           return new NextResponse(JSON.stringify(otpCode), {
             status: 201,
           });
         }
       } catch (error) {
+        revalidatePath(request.url);
         return new NextResponse("Internal Server Error : " + error, {
           status: 500,
         });
@@ -104,14 +109,17 @@ export const POST = async (request: NextRequest) => {
 
     try {
       await newAdmin.save();
+      revalidatePath(request.url);
       return new NextResponse("Admin Registered successfully!", {
         status: 200,
       });
     } catch (error) {
+      revalidatePath(request.url);
       return new NextResponse("Internal Server Error : " + error, {
         status: 500,
       });
     }
   }
+  revalidatePath(request.url);
   return new NextResponse("Internal Server Error!", { status: 500 });
 };

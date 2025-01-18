@@ -28,7 +28,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, session }) => {
 
   return (
     <SessionProvider
-      session={currentSession?.user?._id ? currentSession : session}
+      session={currentSession?.user?._id ? currentSession : null}
     >
       {children}
     </SessionProvider>

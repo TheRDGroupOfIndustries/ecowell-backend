@@ -49,7 +49,7 @@ const Header = () => {
               <a href={Href}>
                 <img
                   className="blur-up lazyloaded"
-                  src={`${ImagePath}/dashboard/multikart-logo-black.png`}
+                  src={`/ecowell-full-logo.png`}
                   width={120}
                   alt=""
                 />

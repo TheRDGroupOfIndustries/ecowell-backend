@@ -23,7 +23,7 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [isEmail, setIsEmail] = useState(false);
   const [emailOrPhone, setEmailOrPhone] = useState("");
-  // console.log(emailOrPhone);
+  const [role, setRole] = useState("user"); // Add this new state
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [termsChecked, setTermsChecked] = useState(true);
@@ -134,6 +134,7 @@ const RegisterForm = () => {
           password,
           phone_number: emailOrPhone,
           isEmail,
+          role,
         }),
       });
 
@@ -189,6 +190,7 @@ const RegisterForm = () => {
             isEmail,
             otp,
             checkOtpCode,
+            role,
           }),
         });
 
@@ -228,6 +230,18 @@ const RegisterForm = () => {
       className="form-horizontal auth-form"
       onSubmit={handleAdminAuthRegister}
     >
+      <FormGroup>
+        <Input
+          type="select"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          disabled={otpBtn}
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+          <option value="super-admin">Super Admin</option>
+        </Input>
+      </FormGroup>
       <FormGroup>
         <Input
           required

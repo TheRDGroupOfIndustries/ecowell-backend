@@ -6,10 +6,18 @@ import { sendOtpToPhone, transporter, verifyOtpFromPhone } from "../../core";
 import { revalidatePath } from "next/cache";
 
 export const POST = async (request: NextRequest) => {
-  const { name, email, password, phone_number, isEmail, otp, checkOtpCode } =
-    await request.json();
+  const {
+    name,
+    email,
+    password,
+    phone_number,
+    isEmail,
+    otp,
+    checkOtpCode,
+    role,
+  } = await request.json();
 
-  // console.log(name, email, phone_number, isEmail, password, otp, checkOtpCode);
+  // console.log(name, email, phone_number, role, isEmail, password, otp, checkOtpCode);
 
   await connectToMongoDB();
 
@@ -93,6 +101,7 @@ export const POST = async (request: NextRequest) => {
         name,
         email,
         password: hashPassword,
+        role,
       });
     } else {
       const isOtpValid = await verifyOtpFromPhone(phone_number, otp);
@@ -103,6 +112,7 @@ export const POST = async (request: NextRequest) => {
         newAdmin = new Admin({
           name,
           phone_number,
+          role,
         });
       }
     }

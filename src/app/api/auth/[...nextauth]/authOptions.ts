@@ -120,20 +120,17 @@ export const authOptions: NextAuthOptions = {
           const adminExists = await Admin.findOne({ email: user.email });
 
           if (!adminExists) {
-            const newUser = new Admin({
-              name: user.name,
-              email: user.email,
-              image: user?.image,
-            });
-            const savedUser = await newUser.save();
-            return savedUser;
+            throw new Error(
+              "No_admin_account_found_with_this_email_please_contact_your_administrator_or_sign_in_with_credentials"
+            );
           }
-          return adminExists;
+          return true;
         } catch (error) {
-          console.log("Error storing onto the db : ", error);
-          return false;
+          console.log("Error_during_Google_authentication: ", error);
+          throw error;
         }
       }
+      return true;
     },
     async jwt({ token, user }) {
       if (typeof user !== "undefined") {
@@ -158,5 +155,9 @@ export const authOptions: NextAuthOptions = {
       // console.log("session:", session);
       return session as UserSession;
     },
+  },
+  pages: {
+    signIn: "/en/auth/login",
+    error: "/en/auth/login",
   },
 };

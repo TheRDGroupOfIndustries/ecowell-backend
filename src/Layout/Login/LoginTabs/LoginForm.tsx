@@ -16,6 +16,7 @@ import {
   InputGroupText,
   Label,
 } from "reactstrap";
+import SocialMediaIcons from "./SocialMediaIcons";
 // import SocialMediaIcons from "./SocialMediaIcons";
 
 export const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -246,10 +247,10 @@ const LoginForm = () => {
           {submitting ? "Logging in..." : success ? "Logged in" : "Login"}
         </Button>
       </div>
-      {/* <div className="form-footer">
+      <div className="form-footer">
         <span>Or Login up with Google</span>
         <SocialMediaIcons />
-      </div> */}
+      </div>
     </Form>
   );
 };

@@ -1,6 +1,6 @@
 import Login from "@/Layout/Login/Login";
 
-const LoginContainer = () => {
+const LoginContainer = async () => {
   return <Login />;
 };
 

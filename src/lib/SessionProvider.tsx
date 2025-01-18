@@ -26,6 +26,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, session }) => {
     if (!currentSession?.user?._id) getCurrentSession();
   }, [currentSession, session]);
 
+  // console.log("AuthProvider", currentSession, session);
+
   return (
     <SessionProvider
       session={currentSession?.user?._id ? currentSession : null}

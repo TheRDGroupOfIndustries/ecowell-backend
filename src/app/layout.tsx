@@ -22,6 +22,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
+
   await connectToMongoDB();
   return (
     <html lang="en">

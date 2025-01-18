@@ -2,7 +2,7 @@
 
 import { ChangeEvent, FormEvent, useState } from "react";
 // import Cookies from "js-cookie";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useAppSelector } from "@/Redux/Hooks";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "react-feather";
@@ -16,7 +16,6 @@ import {
   InputGroupText,
   Label,
 } from "reactstrap";
-import SocialMediaIcons from "./SocialMediaIcons";
 // import SocialMediaIcons from "./SocialMediaIcons";
 
 export const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -24,8 +23,13 @@ export const passwordPattern =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 const LoginForm = () => {
+  const { data: session, status } = useSession();
+  const user = session?.user;
+
   const router = useRouter();
   const { i18LangStatus } = useAppSelector((store) => store.LangReducer);
+
+  // console.log("login", session);
 
   const [email, setEmail] = useState("");
   const [isEmail, setIsEmail] = useState(false);
@@ -171,6 +175,9 @@ const LoginForm = () => {
     });
   };
 
+  if (user || status === "authenticated") {
+    router.push(`/${i18LangStatus}/dashboard`);
+  }
   return (
     <Form className="form-horizontal auth-form" onSubmit={handleAdminAuthLogin}>
       <FormGroup>
@@ -247,10 +254,10 @@ const LoginForm = () => {
           {submitting ? "Logging in..." : success ? "Logged in" : "Login"}
         </Button>
       </div>
-      <div className="form-footer">
+      {/* <div className="form-footer">
         <span>Or Login up with Google</span>
         <SocialMediaIcons />
-      </div>
+      </div> */}
     </Form>
   );
 };

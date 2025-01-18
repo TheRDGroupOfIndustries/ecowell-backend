@@ -23,9 +23,10 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [isEmail, setIsEmail] = useState(false);
   const [emailOrPhone, setEmailOrPhone] = useState("");
-  const [role, setRole] = useState("user"); // Add this new state
+  const [role, setRole] = useState("admin");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string>("");
   const [termsChecked, setTermsChecked] = useState(true);
   const [otp, setOtp] = useState("");
   const [checkOtpCode, setCheckOtpCode] = useState("");
@@ -63,6 +64,7 @@ const RegisterForm = () => {
   const handlePassword = (e: ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     setPassword(inputValue);
+
     const validations = [
       { condition: inputValue.trim() === "", message: "Password is required." },
       {
@@ -85,22 +87,19 @@ const RegisterForm = () => {
         condition: inputValue.length < 8,
         message: "Password must be at least 8 characters long.",
       },
-      {
-        condition: !passwordPattern.test(inputValue),
-        message: "Invalid password",
-      },
     ];
 
     for (const validation of validations) {
       if (validation.condition) {
-        toast.error(validation.message);
+        setPasswordError(validation.message);
         setDisableBtn(true);
         return;
       }
     }
 
-    toast.success("Valid password!");
+    setPasswordError("");
     setDisableBtn(false);
+    toast.success("Valid password!");
   };
 
   const handleGetOtp = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -279,6 +278,9 @@ const RegisterForm = () => {
                   {showPassword ? <Eye /> : <EyeOff />}
                 </InputGroupText>
               </InputGroup>
+              {passwordError && (
+                <small className="text-danger mt-2">{passwordError}</small>
+              )}
             </FormGroup>
           )}
           <div className="form-terms">

@@ -36,6 +36,8 @@ const LoginForm = () => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassWord, setShowPassWord] = useState(false);
+  const [passwordError, setPasswordError] = useState<string>("");
+
   const [otp, setOtp] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [disableBtn, setDisableBtn] = useState(false);
@@ -98,12 +100,14 @@ const LoginForm = () => {
 
     for (const validation of validations) {
       if (validation.condition) {
-        toast.error(validation.message);
+        // toast.error(validation.message);
+        setPasswordError(validation.message);
+
         setDisableBtn(true);
         return;
       }
     }
-
+    setPasswordError("");
     toast.success("Valid password!");
     setDisableBtn(false);
   };
@@ -213,6 +217,9 @@ const LoginForm = () => {
               )}
             </InputGroupText>
           </InputGroup>
+          {passwordError && (
+            <small className="text-danger mt-2">{passwordError}</small>
+          )}
         </FormGroup>
       )}
       {showOtpInput && (

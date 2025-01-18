@@ -33,7 +33,7 @@ const TopDashboardCards = () => {
         }
 
         const data = await res.json();
-        console.log("res:", data);
+        // console.log("myDatares:", data);
         setCollectionsLength(data);
       } catch (error) {
         console.error("Error fetching collections:", error);

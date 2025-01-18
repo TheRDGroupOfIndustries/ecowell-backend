@@ -326,11 +326,7 @@
 // };
 
 // export default Datatable;
-// // 
-
-
-
-
+// //
 
 //@ts-nocheck
 import { capitalizeHeader } from "@/lib/utils";
@@ -370,7 +366,7 @@ const Datatable = ({
 }: any) => {
   useEffect(() => {
     setData(myData);
-    console.log("myData", myData);
+    // console.log("myData", myData);
   }, [myData]);
 
   const [checkedValues, setCheckedValues] = useState([]);

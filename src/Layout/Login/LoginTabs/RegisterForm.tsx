@@ -237,7 +237,7 @@ const RegisterForm = () => {
           onChange={(e) => setRole(e.target.value)}
           disabled={otpBtn}
         >
-          <option value="user">User</option>
+          {/* <option value="user">User</option> */}
           <option value="admin">Admin</option>
           <option value="super-admin">Super Admin</option>
         </Input>

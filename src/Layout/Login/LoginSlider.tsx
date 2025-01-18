@@ -18,7 +18,7 @@ const LoginSlider = () => {
             height={80}
             width={80}
             alt="Ecowell Logo"
-            src="/ecowell-logo.png"
+            src="/logo.png"
             className="Img-fluid"
           />
         </div>

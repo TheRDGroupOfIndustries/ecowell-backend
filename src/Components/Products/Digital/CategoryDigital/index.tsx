@@ -284,7 +284,7 @@ const CategoriesDigital = () => {
                         className="modal-title f-w-600"
                         id="exampleModalLabel2"
                       >
-                        Add Digital Category
+                        {isEditingModal ? "Edit" : "Add"} Category
                       </h5>
                     </ModalHeader>
                     <ModalBody>

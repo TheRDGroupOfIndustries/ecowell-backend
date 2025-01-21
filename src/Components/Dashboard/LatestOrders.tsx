@@ -104,22 +104,29 @@ const LatestOrders = () => {
 
   return (
     // <Col xl="6 xl-100">
-      <Card>
-        <CommonCardHeader title="Latest Orders" />
-        <CardBody>
-          <div className="user-status table-responsive latest-order-table">
-            <Table borderless>
-              <thead>
+    <Card>
+      <CommonCardHeader title="Latest Orders" />
+      <CardBody>
+        <div className="user-status table-responsive latest-order-table">
+          <Table borderless>
+            <thead>
+              <tr>
+                <th scope="col">Order ID</th>
+                <th scope="col">Order Total</th>
+                <th scope="col">Payment Method</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!loading && (!allOrders || allOrders.length === 0) ? (
                 <tr>
-                  <th scope="col">Order ID</th>
-                  <th scope="col">Order Total</th>
-                  <th scope="col">Payment Method</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Status</th>
+                  <td colSpan={5} className="text-center p-4">
+                    <h5>No orders made yet</h5>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {allOrders.slice(0, 5).map((order, index) => (
+              ) : (
+                allOrders.slice(0, 5).map((order, index) => (
                   <tr key={index}>
                     <td>{order.order_id}</td>
                     <td className="digits">
@@ -129,15 +136,16 @@ const LatestOrders = () => {
                     <td className="digits">{order.order_date}</td>
                     <td className="digits">{order.status}</td>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-            <Link href="/en/sales/orders">
-              <Button color="primary">View All Orders</Button>
-            </Link>
-          </div>
-        </CardBody>
-      </Card>
+                ))
+              )}
+            </tbody>
+          </Table>
+          <Link href="/en/sales/orders">
+            <Button color="primary">View All Orders</Button>
+          </Link>
+        </div>
+      </CardBody>
+    </Card>
     // </Col>
   );
 };

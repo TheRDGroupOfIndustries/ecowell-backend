@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToMongoDB } from "@/lib/db";
 import Products from "@/models/Products";
-import { generateSlug } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
 // const generateUniqueSlug = async (slug: string) => {
@@ -40,7 +39,10 @@ export const PUT = async (
       benefits,
       faqs,
       additionalInfo,
-      isSingleVariantProduct, // Add this field
+      isSingleVariantProduct,
+      heroBanner,
+      dailyRitual,
+      ingredientHighlights,
     }: {
       title?: string;
       description?: string;
@@ -73,7 +75,24 @@ export const PUT = async (
         phone: string;
         email: string;
       };
-      isSingleVariantProduct?: boolean; // Add this type
+      isSingleVariantProduct?: boolean;
+
+      heroBanner?: {
+        title?: string;
+        subtitle?: string;
+        description?: string;
+        backgroundImage?: string;
+      };
+      dailyRitual?: {
+        title?: string;
+        description?: string;
+        lifestyleImage?: string;
+      };
+      ingredientHighlights?: {
+        name?: string;
+        description?: string;
+        image?: string;
+      }[];
     } = await request.json();
 
     await connectToMongoDB();
@@ -113,6 +132,31 @@ export const PUT = async (
     }
     console.log("Category: ", category);
     console.log("updated category: ", product.category);
+
+    // Update new fields
+    if (heroBanner) {
+      product.heroBanner = {
+        title: heroBanner.title || product.heroBanner?.title,
+        subtitle: heroBanner.subtitle || product.heroBanner?.subtitle,
+        description: heroBanner.description || product.heroBanner?.description,
+        backgroundImage:
+          heroBanner.backgroundImage || product.heroBanner?.backgroundImage,
+      };
+    }
+
+    if (dailyRitual) {
+      product.dailyRitual = {
+        title: dailyRitual.title || product.dailyRitual?.title,
+        description:
+          dailyRitual.description || product.dailyRitual?.description,
+        lifestyleImage:
+          dailyRitual.lifestyleImage || product.dailyRitual?.lifestyleImage,
+      };
+    }
+
+    if (ingredientHighlights) {
+      product.ingredientHighlights = ingredientHighlights;
+    }
 
     await product.save();
 

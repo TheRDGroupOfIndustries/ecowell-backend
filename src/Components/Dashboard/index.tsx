@@ -15,19 +15,19 @@ import {
   Tooltip,
 } from "chart.js";
 import CommonBreadcrumb from "@/CommonComponents/CommonBreadcrumb";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import { Container, Row } from "reactstrap";
-import BuySell from "./BuySell";
-import DailyDeposits from "./DailyDeposits";
-import EmployeeStatus from "./EmployeeStatus";
 import LatestOrders from "./LatestOrders";
-import ProductCart from "./ProductCart";
-import SalesStatus from "./SalesStatus";
 import TopDashboardCards from "./TopDashboardCards";
-import TotalCash from "./TotalCash";
-import TotalPurchase from "./TotalPurchase";
-import TotalSales from "./TotalSales";
-const MarketValue = dynamic(() => import("./MarketValue"), { ssr: false });
+// import BuySell from "./BuySell";
+// import DailyDeposits from "./DailyDeposits";
+// import EmployeeStatus from "./EmployeeStatus";
+// import ProductCart from "./ProductCart";
+// import SalesStatus from "./SalesStatus";
+// import TotalCash from "./TotalCash";
+// import TotalPurchase from "./TotalPurchase";
+// import TotalSales from "./TotalSales";
+// const MarketValue = dynamic(() => import("./MarketValue"), { ssr: false });
 
 ChartJS.register(
   CategoryScale,

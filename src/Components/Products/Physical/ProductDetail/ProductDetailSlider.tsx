@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
 import { Col } from "reactstrap";
 
-const ProductDetailSlider = ({ product, selectedFlavor, setSelectedFlavor }: any) => {
+const ProductDetailSlider = ({
+  product,
+  selectedFlavor,
+  setSelectedFlavor,
+}: any) => {
   const slider1Ref = useRef<Slider | null>(null);
   const slider2Ref = useRef<Slider | null>(null);
-  
 
   useEffect(() => {
     if (product && product.variants && product.variants.length > 0) {
@@ -29,7 +32,9 @@ const ProductDetailSlider = ({ product, selectedFlavor, setSelectedFlavor }: any
       <Slider
         asNavFor={slider2Ref.current ?? undefined}
         ref={slider1Ref}
-        className="product-slider no-arrow"
+        className="product-slider"
+        arrows={true}
+        infinite={true}
         beforeChange={(oldIndex, newIndex) => {
           if (slider2Ref.current) {
             slider2Ref.current.slickGoTo(newIndex);
@@ -38,14 +43,26 @@ const ProductDetailSlider = ({ product, selectedFlavor, setSelectedFlavor }: any
       >
         {selectedFlavor.images.map((img: string, index: number) => (
           <div key={index} className="item">
-            <img className="img-fluid" src={img} alt={`Flavor Image ${index + 1}`} />
+            <img
+              className="img-fluid"
+              src={img}
+              alt={`Flavor Image ${index + 1}`}
+              style={{
+                height: "300px",
+                width: "100%",
+                objectFit: "contain",
+                objectPosition: "center",
+              }}
+            />
           </div>
         ))}
       </Slider>
       <Slider
+        slidesToShow={2}
+        slidesToScroll={1}
         asNavFor={slider1Ref.current ?? undefined}
         ref={slider2Ref}
-        slidesToShow={selectedFlavor.images.length}
+        // slidesToShow={selectedFlavor.images.length}
         swipeToSlide
         focusOnSelect
         className="small-slick"
@@ -56,17 +73,24 @@ const ProductDetailSlider = ({ product, selectedFlavor, setSelectedFlavor }: any
         }}
       >
         {selectedFlavor.images.map((img: string, index: number) => (
-          <div key={index} className="item" style={{
-            width: "fit-content!important",
-          }}>
-            <img className="img-fluid"
+          <div
+            key={index}
+            className="item"
             style={{
-              height: "150px",
-              width: "200px",
-              objectFit: "cover",
-              objectPosition: "top",
+              width: "fit-content!important",
             }}
-             src={img} alt={`Flavor Thumbnail ${index + 1}`} />
+          >
+            <img
+              className="img-fluid"
+              style={{
+                height: "150px",
+                width: "200px",
+                objectFit: "contain",
+                objectPosition: "top",
+              }}
+              src={img}
+              alt={`Flavor Thumbnail ${index + 1}`}
+            />
           </div>
         ))}
       </Slider>

@@ -15,6 +15,10 @@ import AdditionalInfoForm from "../../AddDigitalProduct/AdditionalForm";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import HeroBannerForm from "../../AddDigitalProduct/HeroBannerForm";
+import DailyRitualForm from "../../AddDigitalProduct/DailyRitualForm";
+import IngredientHighlightsForm from "../../AddDigitalProduct/IngredientHighlightsForm";
+import { IngredientHighlight } from "@/Types/product";
 
 interface Variant {
   flavor: string;
@@ -55,6 +59,19 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
     isNew: false,
     isSingleVariantProduct: false,
     bestBefore: "",
+    // new fields
+    heroBanner: {
+      title: "",
+      subtitle: "",
+      description: "",
+      backgroundImage: "",
+    },
+    dailyRitual: {
+      title: "",
+      description: "",
+      lifestyleImage: "",
+    },
+    ingredientHighlights: [] as IngredientHighlight[],
   });
 
   const handleGeneralForm = (field: string, value: any) => {
@@ -143,6 +160,10 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
           isNew: product.isNew || false,
           bestBefore: bestBeforeTemp,
           isSingleVariantProduct: product?.isSingleVariantProduct,
+
+          heroBanner: product.heroBanner,
+          dailyRitual: product.dailyRitual,
+          ingredientHighlights: product.ingredientHighlights,
         });
         setVariants(product.variants);
         setAdditionalInfoStates(product.additionalInfo);
@@ -307,6 +328,20 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
             />
             {/* <MetaDataForm /> */}
           </Col>
+          <HeroBannerForm
+            heroBanner={generalFormState.heroBanner}
+            onUpdate={(data) => handleGeneralForm("heroBanner", data)}
+          />
+
+          <DailyRitualForm
+            dailyRitual={generalFormState.dailyRitual}
+            onUpdate={(data) => handleGeneralForm("dailyRitual", data)}
+          />
+
+          <IngredientHighlightsForm
+            ingredientHighlights={generalFormState.ingredientHighlights}
+            onUpdate={(data) => handleGeneralForm("ingredientHighlights", data)}
+          />
         </Row>
       </Container>
     </Fragment>

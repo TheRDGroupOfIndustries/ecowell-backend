@@ -1,14 +1,6 @@
 import CommonBreadcrumb from "@/CommonComponents/CommonBreadcrumb";
 import { Fragment, useState } from "react";
-import {
-  Button,
-  Col,
-  Container,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-} from "reactstrap";
+import { Col, Container, FormGroup, Input, Label, Row } from "reactstrap";
 import GeneralForm from "./GeneralForm";
 import MetaDataForm from "./MetaDataForm";
 import VariantForm from "./VariantForm";
@@ -16,9 +8,9 @@ import AdditionalInfoForm from "./AdditionalForm";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { uploadNewFile } from "@/lib/actions/fileUploads";
-import Image from "next/image";
-import { AiOutlineDelete } from "react-icons/ai";
+import HeroBannerForm from "./HeroBannerForm";
+import DailyRitualForm from "./DailyRitualForm";
+import IngredientHighlightsForm from "./IngredientHighlightsForm";
 
 interface Variant {
   flavor: string;
@@ -313,59 +305,59 @@ const AddDigitalProduct = () => {
     router.push("/");
   };
 
-  const handleImageUpload = async (
-    callback: (imageUrl: string) => void,
-    section: "heroBanner" | "dailyRitual" | "ingredient",
-    index?: number
-  ) => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*, .gif";
-    input.multiple = false;
+  // const handleImageUpload = async (
+  //   callback: (imageUrl: string) => void,
+  //   section: "heroBanner" | "dailyRitual" | "ingredient",
+  //   index?: number
+  // ) => {
+  //   const input = document.createElement("input");
+  //   input.type = "file";
+  //   input.accept = "image/*, .gif";
+  //   input.multiple = false;
 
-    input.onchange = async (e) => {
-      const target = e.target as HTMLInputElement;
-      const files = Array.from(target.files || []);
+  //   input.onchange = async (e) => {
+  //     const target = e.target as HTMLInputElement;
+  //     const files = Array.from(target.files || []);
 
-      if (files.length > 0) {
-        // Set uploading state
-        setUploadingStates((prev) => {
-          if (section === "ingredient" && typeof index === "number") {
-            const newIngredients = [...prev.ingredients];
-            newIngredients[index] = true;
-            return { ...prev, ingredients: newIngredients };
-          }
-          return { ...prev, [section]: true };
-        });
+  //     if (files.length > 0) {
+  //       // Set uploading state
+  //       setUploadingStates((prev) => {
+  //         if (section === "ingredient" && typeof index === "number") {
+  //           const newIngredients = [...prev.ingredients];
+  //           newIngredients[index] = true;
+  //           return { ...prev, ingredients: newIngredients };
+  //         }
+  //         return { ...prev, [section]: true };
+  //       });
 
-        const imagesFormData = new FormData();
-        files.forEach((file) => {
-          imagesFormData.append("file", file);
-        });
+  //       const imagesFormData = new FormData();
+  //       files.forEach((file) => {
+  //         imagesFormData.append("file", file);
+  //       });
 
-        try {
-          const imageUrl = (await uploadNewFile(imagesFormData)) as string;
-          if (imageUrl) {
-            callback(imageUrl);
-          }
-        } catch (error) {
-          toast.error("Image upload failed. Please try again later.");
-        } finally {
-          // Reset uploading state
-          setUploadingStates((prev) => {
-            if (section === "ingredient" && typeof index === "number") {
-              const newIngredients = [...prev.ingredients];
-              newIngredients[index] = false;
-              return { ...prev, ingredients: newIngredients };
-            }
-            return { ...prev, [section]: false };
-          });
-        }
-      }
-    };
+  //       try {
+  //         const imageUrl = (await uploadNewFile(imagesFormData)) as string;
+  //         if (imageUrl) {
+  //           callback(imageUrl);
+  //         }
+  //       } catch (error) {
+  //         toast.error("Image upload failed. Please try again later.");
+  //       } finally {
+  //         // Reset uploading state
+  //         setUploadingStates((prev) => {
+  //           if (section === "ingredient" && typeof index === "number") {
+  //             const newIngredients = [...prev.ingredients];
+  //             newIngredients[index] = false;
+  //             return { ...prev, ingredients: newIngredients };
+  //           }
+  //           return { ...prev, [section]: false };
+  //         });
+  //       }
+  //     }
+  //   };
 
-    input.click();
-  };
+  //   input.click();
+  // };
 
   return (
     <Fragment>
@@ -451,309 +443,20 @@ const AddDigitalProduct = () => {
 
             {/* <MetaDataForm /> */}
           </Col>
-          {/* Hero Banner Section */}
-          <div className="card">
-            <div className="card-header">
-              <h5>Hero Banner</h5>
-            </div>
-            <div className="card-body">
-              <div className="digital-add needs-validation">
-                <div className="form-group mb-3">
-                  <label className="col-form-label pt-0">Title</label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={generalFormState.heroBanner.title}
-                    onChange={(e) =>
-                      handleGeneralForm("heroBanner", {
-                        ...generalFormState.heroBanner,
-                        title: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label className="col-form-label pt-0">Subtitle</label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={generalFormState.heroBanner.subtitle}
-                    onChange={(e) =>
-                      handleGeneralForm("heroBanner", {
-                        ...generalFormState.heroBanner,
-                        subtitle: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label className="col-form-label pt-0">Description</label>
-                  <textarea
-                    className="form-control"
-                    rows={4}
-                    value={generalFormState.heroBanner.description}
-                    onChange={(e) =>
-                      handleGeneralForm("heroBanner", {
-                        ...generalFormState.heroBanner,
-                        description: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label className="col-form-label pt-0">
-                    Background Image
-                  </label>
-                  <div className="d-flex gap-2 align-items-center mb-2">
-                    <button
-                      className="btn btn-primary"
-                      onClick={() =>
-                        handleImageUpload(
-                          (imageUrl) =>
-                            handleGeneralForm("heroBanner", {
-                              ...generalFormState.heroBanner,
-                              backgroundImage: imageUrl,
-                            }),
-                          "heroBanner"
-                        )
-                      }
-                      disabled={uploadingStates.heroBanner}
-                    >
-                      {uploadingStates.heroBanner
-                        ? "Uploading..."
-                        : generalFormState.heroBanner.backgroundImage
-                        ? "Change Image"
-                        : "Upload"}
-                    </button>
-                  </div>
-                  {generalFormState.heroBanner.backgroundImage && (
-                    <div className="mt-2" style={{ maxWidth: "200px" }}>
-                      <Image
-                        src={generalFormState.heroBanner.backgroundImage}
-                        alt="Hero Banner Background"
-                        width={200}
-                        height={200}
-                        style={{ objectFit: "contain" }}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <HeroBannerForm
+            heroBanner={generalFormState.heroBanner}
+            onUpdate={(data) => handleGeneralForm("heroBanner", data)}
+          />
 
-          {/* Daily Ritual Section */}
-          <div className="card">
-            <div className="card-header">
-              <h5>Daily Ritual</h5>
-            </div>
-            <div className="card-body">
-              <div className="digital-add needs-validation">
-                <div className="form-group mb-3">
-                  <label className="col-form-label pt-0">Title</label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={generalFormState.dailyRitual.title}
-                    onChange={(e) =>
-                      handleGeneralForm("dailyRitual", {
-                        ...generalFormState.dailyRitual,
-                        title: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label className="col-form-label pt-0">Description</label>
-                  <textarea
-                    className="form-control"
-                    rows={4}
-                    value={generalFormState.dailyRitual.description}
-                    onChange={(e) =>
-                      handleGeneralForm("dailyRitual", {
-                        ...generalFormState.dailyRitual,
-                        description: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div className="form-group mb-3">
-                  <label className="col-form-label pt-0">Lifestyle Image</label>
-                  <div className="d-flex gap-2 align-items-center mb-2">
-                    <button
-                      className="btn btn-primary"
-                      onClick={() =>
-                        handleImageUpload(
-                          (imageUrl) =>
-                            handleGeneralForm("dailyRitual", {
-                              ...generalFormState.dailyRitual,
-                              lifestyleImage: imageUrl,
-                            }),
-                          "dailyRitual"
-                        )
-                      }
-                      disabled={uploadingStates.dailyRitual}
-                    >
-                      {uploadingStates.dailyRitual
-                        ? "Uploading..."
-                        : generalFormState.dailyRitual.lifestyleImage
-                        ? "Change Image"
-                        : "Upload"}
-                    </button>
-                  </div>
-                  {generalFormState.dailyRitual.lifestyleImage && (
-                    <div className="mt-2" style={{ maxWidth: "200px" }}>
-                      <Image
-                        src={generalFormState.dailyRitual.lifestyleImage}
-                        alt="Daily Ritual Lifestyle"
-                        width={200}
-                        height={200}
-                        style={{ objectFit: "contain" }}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <DailyRitualForm
+            dailyRitual={generalFormState.dailyRitual}
+            onUpdate={(data) => handleGeneralForm("dailyRitual", data)}
+          />
 
-          {/* Ingredient Highlights Section */}
-          <div className="card">
-            <div className="card-header d-flex justify-content-between align-items-center">
-              <h5>Ingredient Highlights</h5>
-              <span className="text-muted">
-                {generalFormState.ingredientHighlights.length}/3 ingredients
-              </span>
-            </div>
-            <div className="card-body">
-              <div className="digital-add needs-validation">
-                {generalFormState.ingredientHighlights.map(
-                  (highlight, index) => (
-                    <div key={index} className="border p-3 mb-3">
-                      <div className="form-group mb-3">
-                        <label className="col-form-label pt-0">Name</label>
-                        <input
-                          className="form-control"
-                          type="text"
-                          value={highlight.name}
-                          onChange={(e) => {
-                            const updatedHighlights = [
-                              ...generalFormState.ingredientHighlights,
-                            ];
-                            updatedHighlights[index].name = e.target.value;
-                            handleGeneralForm(
-                              "ingredientHighlights",
-                              updatedHighlights
-                            );
-                          }}
-                        />
-                      </div>
-                      <div className="form-group mb-3">
-                        <label className="col-form-label pt-0">
-                          Description
-                        </label>
-                        <textarea
-                          className="form-control"
-                          rows={3}
-                          value={highlight.description}
-                          onChange={(e) => {
-                            const updatedHighlights = [
-                              ...generalFormState.ingredientHighlights,
-                            ];
-                            updatedHighlights[index].description =
-                              e.target.value;
-                            handleGeneralForm(
-                              "ingredientHighlights",
-                              updatedHighlights
-                            );
-                          }}
-                        />
-                      </div>
-                      <div className="form-group mb-3">
-                        <label className="col-form-label pt-0">Image</label>
-                        <div className="d-flex gap-2 align-items-center mb-2">
-                          <button
-                            className="btn btn-primary"
-                            onClick={() =>
-                              handleImageUpload(
-                                (imageUrl) => {
-                                  const updatedHighlights = [
-                                    ...generalFormState.ingredientHighlights,
-                                  ];
-                                  updatedHighlights[index].image = imageUrl;
-                                  handleGeneralForm(
-                                    "ingredientHighlights",
-                                    updatedHighlights
-                                  );
-                                },
-                                "ingredient",
-                                index
-                              )
-                            }
-                            disabled={uploadingStates.ingredients[index]}
-                          >
-                            {uploadingStates.ingredients[index]
-                              ? "Uploading..."
-                              : highlight.image
-                              ? "Change Image"
-                              : "Upload"}
-                          </button>
-                        </div>
-                        {highlight.image && (
-                          <div className="mt-2" style={{ maxWidth: "200px" }}>
-                            <Image
-                              src={highlight.image}
-                              alt={`Ingredient ${highlight.name}`}
-                              width={200}
-                              height={200}
-                              style={{ objectFit: "contain" }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <div className="d-flex justify-content-end">
-                        <Button
-                          color="danger"
-                          size="sm"
-                          className="dangerBtn px-3 py-2"
-                          onClick={() => {
-                            const updatedHighlights =
-                              generalFormState.ingredientHighlights.filter(
-                                (_, i) => i !== index
-                              );
-                            handleGeneralForm(
-                              "ingredientHighlights",
-                              updatedHighlights
-                            );
-                          }}
-                        >
-                          <AiOutlineDelete size={20} />
-                        </Button>
-                      </div>
-                    </div>
-                  )
-                )}
-                {generalFormState.ingredientHighlights.length < 3 && (
-                  <button
-                    className="btn btn-primary"
-                    onClick={() =>
-                      handleGeneralForm("ingredientHighlights", [
-                        ...generalFormState.ingredientHighlights,
-                        { name: "", description: "", image: "" },
-                      ])
-                    }
-                  >
-                    Add Ingredient Highlight
-                  </button>
-                )}
-                {generalFormState.ingredientHighlights.length === 3 && (
-                  <div className="alert alert-info mt-2">
-                    Maximum limit of 3 ingredients reached
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <IngredientHighlightsForm
+            ingredientHighlights={generalFormState.ingredientHighlights}
+            onUpdate={(data) => handleGeneralForm("ingredientHighlights", data)}
+          />
         </Row>
       </Container>
     </Fragment>

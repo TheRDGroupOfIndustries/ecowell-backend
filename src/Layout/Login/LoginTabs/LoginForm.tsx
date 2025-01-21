@@ -43,6 +43,9 @@ const LoginForm = () => {
   const [disableBtn, setDisableBtn] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [hasShownEmailValidToast, setHasShownEmailValidToast] = useState(false);
+  const [hasShownPasswordValidToast, setHasShownPasswordValidToast] =
+    useState(false);
 
   const handleEmailOrPhone = (e: ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value;
@@ -52,10 +55,14 @@ const LoginForm = () => {
     if (emailPattern.test(inputValue)) {
       setIsEmail(true);
       setEmail(inputValue);
-      toast.success("Valid email");
+      if (!hasShownEmailValidToast) {
+        toast.success("Valid email");
+        setHasShownEmailValidToast(true);
+      }
       setDisableBtn(false);
     } else {
       setIsEmail(false);
+      setHasShownEmailValidToast(false);
       if (/^\d+$/.test(inputValue) && inputValue.length <= 10) {
         inputValue = inputValue.replace(/[^\d]/g, "").slice(0, 10);
         setEmailOrPhone(inputValue);
@@ -102,13 +109,16 @@ const LoginForm = () => {
       if (validation.condition) {
         // toast.error(validation.message);
         setPasswordError(validation.message);
-
         setDisableBtn(true);
+        setHasShownPasswordValidToast(false);
         return;
       }
     }
     setPasswordError("");
-    toast.success("Valid password!");
+    if (!hasShownPasswordValidToast) {
+      toast.success("Valid password!");
+      setHasShownPasswordValidToast(true);
+    }
     setDisableBtn(false);
   };
 

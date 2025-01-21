@@ -14,7 +14,8 @@ import {
   Collapse,
 } from "reactstrap";
 import classnames from "classnames";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaEdit } from "react-icons/fa";
+import Link from "next/link";
 
 const ProductInformation = ({
   product,
@@ -41,41 +42,55 @@ const ProductInformation = ({
   return (
     <Col xl="8">
       <div className="product-page-details product-right mb-0">
-        <h2>{product.title}</h2>
+        <div className="d-flex justify-content-between align-items-center">
+          <h2>{product.title}</h2>
+          <Link
+            href={`/en/products/digital/digital-edit-product/${product.sku}`}
+            className="btn btn-primary d-flex align-items-center gap-2"
+            style={{ padding: "8px 16px" }}
+          >
+            <FaEdit /> Edit
+          </Link>
+        </div>
         <hr />
         <h5 className="product-title">Product Details</h5>
+
         <p>{product.description}</p>
         <h5 className="product-title">Product Category</h5>
         <p>{product.category.title}</p>
         <div className="product-price digits mt-2">
           <h3>
-            ₹{product.price}{" "}
-            <del>{product.salePrice ? `₹${product.salePrice}` : ""}</del>
+            ₹{product.salePrice ? product.salePrice : product.price}{" "}
+            {product.salePrice && product.price && <del>{product.price}</del>}
           </h3>
         </div>
 
-        <h5 className="product-title size-text">Select Flavor</h5>
-        <div className="">
-          <ul>
-            {flavors.map((flavor: string, index: number) => (
-              <li
-                key={index}
-                onClick={() => setSelectedFlavor(product.variants[index])}
-                className={`${
-                  selectedFlavor && selectedFlavor.flavor === flavor
-                    ? "activeFlavourInstance"
-                    : ""
-                } flavourInstance`}
-              >
-                <a>{flavor}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {!product?.isSingleVariantProduct && (
+          <>
+            <h5 className="product-title size-text">Select Flavor</h5>
+            <ul>
+              {flavors.map((flavor: string, index: number) => (
+                <li
+                  key={index}
+                  onClick={() => setSelectedFlavor(product.variants[index])}
+                  className={`${
+                    selectedFlavor && selectedFlavor.flavor === flavor
+                      ? "activeFlavourInstance"
+                      : ""
+                  } flavourInstance`}
+                >
+                  <a>{flavor}</a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
 
         {selectedFlavor && (
           <>
-            <h5 className="product-title">Flavor Details</h5>
+            <h5 className="product-title pb-2">
+              {!product?.isSingleVariantProduct ? "Flavor Details" : "Details"}
+            </h5>
             <p>
               <strong>Stock:</strong> {selectedFlavor.stock}
             </p>

@@ -38,6 +38,10 @@ const RegisterForm = () => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const [hasShownEmailValidToast, setHasShownEmailValidToast] = useState(false);
+  const [hasShownPasswordValidToast, setHasShownPasswordValidToast] =
+    useState(false);
+
   const handleEmailOrPhone = (e: ChangeEvent<HTMLInputElement>) => {
     let inputValue = e.target.value;
     setEmailOrPhone(inputValue);
@@ -46,16 +50,19 @@ const RegisterForm = () => {
     if (emailPattern.test(inputValue)) {
       setIsEmail(true);
       setEmail(inputValue);
-      toast.success("Valid email");
+      if (!hasShownEmailValidToast) {
+        toast.success("Valid email");
+        setHasShownEmailValidToast(true);
+      }
       setDisableBtn(false);
     } else {
       setIsEmail(false);
+      setHasShownEmailValidToast(false);
       if (/^\d+$/.test(inputValue) && inputValue.length <= 10) {
         inputValue = inputValue.replace(/[^\d]/g, "").slice(0, 10);
         setEmailOrPhone(inputValue);
         setDisableBtn(false);
       } else {
-        // toast.error("Invalid input");
         setDisableBtn(true);
       }
     }
@@ -93,13 +100,17 @@ const RegisterForm = () => {
       if (validation.condition) {
         setPasswordError(validation.message);
         setDisableBtn(true);
+        setHasShownPasswordValidToast(false);
         return;
       }
     }
 
     setPasswordError("");
     setDisableBtn(false);
-    toast.success("Valid password!");
+    if (!hasShownPasswordValidToast) {
+      toast.success("Valid password!");
+      setHasShownPasswordValidToast(true);
+    }
   };
 
   const handleGetOtp = async (e: React.MouseEvent<HTMLButtonElement>) => {

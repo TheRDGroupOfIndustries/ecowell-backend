@@ -35,7 +35,9 @@ export const GET = async (request: NextRequest) => {
         sum +
         order.orders.reduce(
           (orderSum: number, orderDetail: any) =>
-            orderSum + orderDetail.order_info.total_price,
+            orderDetail.order_info.status === "delivered"
+              ? orderSum + orderDetail.order_info.total_price
+              : orderSum,
           0
         ),
       0

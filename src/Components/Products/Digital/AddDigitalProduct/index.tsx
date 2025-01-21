@@ -1,6 +1,14 @@
 import CommonBreadcrumb from "@/CommonComponents/CommonBreadcrumb";
 import { Fragment, useState } from "react";
-import { Col, Container, Row } from "reactstrap";
+import {
+  Button,
+  Col,
+  Container,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+} from "reactstrap";
 import GeneralForm from "./GeneralForm";
 import MetaDataForm from "./MetaDataForm";
 import VariantForm from "./VariantForm";
@@ -9,6 +17,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { uploadNewFile } from "@/lib/actions/fileUploads";
+import Image from "next/image";
+import { AiOutlineDelete } from "react-icons/ai";
 
 interface Variant {
   flavor: string;
@@ -49,6 +59,7 @@ const AddDigitalProduct = () => {
     isNew: false,
     bestBefore: "",
     sell_on_google_quantity: 0,
+    isSingleVariantProduct: false,
 
     // new fields
     heroBanner: {
@@ -102,10 +113,10 @@ const AddDigitalProduct = () => {
   };
 
   const [additionalInfoStates, setAdditionalInfoStates] = useState({
-    manufacturedBy: "",
-    countryOfOrigin: "",
-    phone: "",
-    email: "",
+    manufacturedBy: "Ecowell",
+    countryOfOrigin: "India",
+    phone: "7065937377",
+    email: "contact@ecowellonline.com",
   });
 
   const handleAdditionalChange = (field: string, value: any) => {
@@ -123,6 +134,12 @@ const AddDigitalProduct = () => {
   };
 
   const [isPosting, setIsPosting] = useState(false);
+
+  const [uploadingStates, setUploadingStates] = useState({
+    heroBanner: false,
+    dailyRitual: false,
+    ingredients: new Array(3).fill(false),
+  });
 
   const handleSave = async () => {
     // Validate required fields
@@ -216,6 +233,7 @@ const AddDigitalProduct = () => {
         isNew: false,
         bestBefore: "",
         sell_on_google_quantity: 0,
+        isSingleVariantProduct: false,
 
         // new fields
         heroBanner: {
@@ -268,6 +286,7 @@ const AddDigitalProduct = () => {
       isNew: false,
       bestBefore: "",
       sell_on_google_quantity: 0,
+      isSingleVariantProduct: false,
 
       // new fields
       heroBanner: {
@@ -296,7 +315,8 @@ const AddDigitalProduct = () => {
 
   const handleImageUpload = async (
     callback: (imageUrl: string) => void,
-    setUploading?: (loading: boolean) => void
+    section: "heroBanner" | "dailyRitual" | "ingredient",
+    index?: number
   ) => {
     const input = document.createElement("input");
     input.type = "file";
@@ -308,22 +328,38 @@ const AddDigitalProduct = () => {
       const files = Array.from(target.files || []);
 
       if (files.length > 0) {
-        setUploading?.(true);
+        // Set uploading state
+        setUploadingStates((prev) => {
+          if (section === "ingredient" && typeof index === "number") {
+            const newIngredients = [...prev.ingredients];
+            newIngredients[index] = true;
+            return { ...prev, ingredients: newIngredients };
+          }
+          return { ...prev, [section]: true };
+        });
+
         const imagesFormData = new FormData();
         files.forEach((file) => {
-          imagesFormData.append("files", file);
+          imagesFormData.append("file", file);
         });
 
         try {
           const imageUrl = (await uploadNewFile(imagesFormData)) as string;
-
           if (imageUrl) {
             callback(imageUrl);
           }
         } catch (error) {
           toast.error("Image upload failed. Please try again later.");
         } finally {
-          setUploading?.(false);
+          // Reset uploading state
+          setUploadingStates((prev) => {
+            if (section === "ingredient" && typeof index === "number") {
+              const newIngredients = [...prev.ingredients];
+              newIngredients[index] = false;
+              return { ...prev, ingredients: newIngredients };
+            }
+            return { ...prev, [section]: false };
+          });
         }
       }
     };
@@ -337,7 +373,7 @@ const AddDigitalProduct = () => {
         title="Add Products"
         parent="products/digital"
         element={
-          <div className="d-flex gap-2 justify-content-end ">
+          <div className="d-flex gap-2 justify-content-end">
             <button
               onClick={handleSave}
               className="btn btn-primary"
@@ -360,7 +396,51 @@ const AddDigitalProduct = () => {
             />
           </Col>
           <Col xl="6">
+            <div className="card mb-3">
+              <div className="card-body">
+                <FormGroup>
+                  <Label className="col-form-label pt-0">
+                    Single Variant Product
+                  </Label>
+                  <div className="m-checkbox-inline mb-0 custom-radio-ml d-flex gap-4 radio-animated">
+                    <Label className="d-block">
+                      <Input
+                        className="radio_animated"
+                        id="isSingleVariant-yes"
+                        type="radio"
+                        name="isSingleVariantProduct"
+                        value="true"
+                        checked={
+                          generalFormState.isSingleVariantProduct === true
+                        }
+                        onChange={() =>
+                          handleGeneralForm("isSingleVariantProduct", true)
+                        }
+                      />
+                      Yes
+                    </Label>
+                    <Label className="d-block">
+                      <Input
+                        className="radio_animated"
+                        id="isSingleVariant-no"
+                        type="radio"
+                        name="isSingleVariantProduct"
+                        value="false"
+                        checked={
+                          generalFormState.isSingleVariantProduct === false
+                        }
+                        onChange={() =>
+                          handleGeneralForm("isSingleVariantProduct", false)
+                        }
+                      />
+                      No
+                    </Label>
+                  </div>
+                </FormGroup>
+              </div>
+            </div>
             <VariantForm
+              isSingleVariantProduct={generalFormState.isSingleVariantProduct}
               variantProps={variantFormProps}
               handleVariantChange={handleVariantChange}
             />
@@ -424,27 +504,39 @@ const AddDigitalProduct = () => {
                   <label className="col-form-label pt-0">
                     Background Image
                   </label>
-                  <div className="d-flex gap-2 align-items-center">
-                    {/* <input
-                      className="form-control"
-                      type="text"
-                      value={generalFormState.heroBanner.backgroundImage}
-                      readOnly
-                    /> */}
+                  <div className="d-flex gap-2 align-items-center mb-2">
                     <button
                       className="btn btn-primary"
                       onClick={() =>
-                        handleImageUpload((imageUrl) =>
-                          handleGeneralForm("heroBanner", {
-                            ...generalFormState.heroBanner,
-                            backgroundImage: imageUrl,
-                          })
+                        handleImageUpload(
+                          (imageUrl) =>
+                            handleGeneralForm("heroBanner", {
+                              ...generalFormState.heroBanner,
+                              backgroundImage: imageUrl,
+                            }),
+                          "heroBanner"
                         )
                       }
+                      disabled={uploadingStates.heroBanner}
                     >
-                      Upload
+                      {uploadingStates.heroBanner
+                        ? "Uploading..."
+                        : generalFormState.heroBanner.backgroundImage
+                        ? "Change Image"
+                        : "Upload"}
                     </button>
                   </div>
+                  {generalFormState.heroBanner.backgroundImage && (
+                    <div className="mt-2" style={{ maxWidth: "200px" }}>
+                      <Image
+                        src={generalFormState.heroBanner.backgroundImage}
+                        alt="Hero Banner Background"
+                        width={200}
+                        height={200}
+                        style={{ objectFit: "contain" }}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -487,27 +579,39 @@ const AddDigitalProduct = () => {
                 </div>
                 <div className="form-group mb-3">
                   <label className="col-form-label pt-0">Lifestyle Image</label>
-                  <div className="d-flex gap-2 align-items-center">
-                    {/* <input
-                      className="form-control"
-                      type="text"
-                      value={generalFormState.dailyRitual.lifestyleImage}
-                      readOnly
-                    /> */}
+                  <div className="d-flex gap-2 align-items-center mb-2">
                     <button
                       className="btn btn-primary"
                       onClick={() =>
-                        handleImageUpload((imageUrl) =>
-                          handleGeneralForm("dailyRitual", {
-                            ...generalFormState.dailyRitual,
-                            lifestyleImage: imageUrl,
-                          })
+                        handleImageUpload(
+                          (imageUrl) =>
+                            handleGeneralForm("dailyRitual", {
+                              ...generalFormState.dailyRitual,
+                              lifestyleImage: imageUrl,
+                            }),
+                          "dailyRitual"
                         )
                       }
+                      disabled={uploadingStates.dailyRitual}
                     >
-                      Upload
+                      {uploadingStates.dailyRitual
+                        ? "Uploading..."
+                        : generalFormState.dailyRitual.lifestyleImage
+                        ? "Change Image"
+                        : "Upload"}
                     </button>
                   </div>
+                  {generalFormState.dailyRitual.lifestyleImage && (
+                    <div className="mt-2" style={{ maxWidth: "200px" }}>
+                      <Image
+                        src={generalFormState.dailyRitual.lifestyleImage}
+                        alt="Daily Ritual Lifestyle"
+                        width={200}
+                        height={200}
+                        style={{ objectFit: "contain" }}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -567,47 +671,65 @@ const AddDigitalProduct = () => {
                       </div>
                       <div className="form-group mb-3">
                         <label className="col-form-label pt-0">Image</label>
-                        <div className="d-flex gap-2 align-items-center">
-                          {/* <input
-                            className="form-control"
-                            type="text"
-                            value={highlight.image}
-                            readOnly
-                          /> */}
+                        <div className="d-flex gap-2 align-items-center mb-2">
                           <button
                             className="btn btn-primary"
                             onClick={() =>
-                              handleImageUpload((imageUrl) => {
-                                const updatedHighlights = [
-                                  ...generalFormState.ingredientHighlights,
-                                ];
-                                updatedHighlights[index].image = imageUrl;
-                                handleGeneralForm(
-                                  "ingredientHighlights",
-                                  updatedHighlights
-                                );
-                              })
+                              handleImageUpload(
+                                (imageUrl) => {
+                                  const updatedHighlights = [
+                                    ...generalFormState.ingredientHighlights,
+                                  ];
+                                  updatedHighlights[index].image = imageUrl;
+                                  handleGeneralForm(
+                                    "ingredientHighlights",
+                                    updatedHighlights
+                                  );
+                                },
+                                "ingredient",
+                                index
+                              )
                             }
+                            disabled={uploadingStates.ingredients[index]}
                           >
-                            Upload
+                            {uploadingStates.ingredients[index]
+                              ? "Uploading..."
+                              : highlight.image
+                              ? "Change Image"
+                              : "Upload"}
                           </button>
                         </div>
+                        {highlight.image && (
+                          <div className="mt-2" style={{ maxWidth: "200px" }}>
+                            <Image
+                              src={highlight.image}
+                              alt={`Ingredient ${highlight.name}`}
+                              width={200}
+                              height={200}
+                              style={{ objectFit: "contain" }}
+                            />
+                          </div>
+                        )}
                       </div>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => {
-                          const updatedHighlights =
-                            generalFormState.ingredientHighlights.filter(
-                              (_, i) => i !== index
+                      <div className="d-flex justify-content-end">
+                        <Button
+                          color="danger"
+                          size="sm"
+                          className="dangerBtn px-3 py-2"
+                          onClick={() => {
+                            const updatedHighlights =
+                              generalFormState.ingredientHighlights.filter(
+                                (_, i) => i !== index
+                              );
+                            handleGeneralForm(
+                              "ingredientHighlights",
+                              updatedHighlights
                             );
-                          handleGeneralForm(
-                            "ingredientHighlights",
-                            updatedHighlights
-                          );
-                        }}
-                      >
-                        Remove
-                      </button>
+                          }}
+                        >
+                          <AiOutlineDelete size={20} />
+                        </Button>
+                      </div>
                     </div>
                   )
                 )}

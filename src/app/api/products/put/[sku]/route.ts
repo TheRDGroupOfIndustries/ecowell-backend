@@ -40,6 +40,7 @@ export const PUT = async (
       benefits,
       faqs,
       additionalInfo,
+      isSingleVariantProduct, // Add this field
     }: {
       title?: string;
       description?: string;
@@ -72,6 +73,7 @@ export const PUT = async (
         phone: string;
         email: string;
       };
+      isSingleVariantProduct?: boolean; // Add this type
     } = await request.json();
 
     await connectToMongoDB();
@@ -105,6 +107,9 @@ export const PUT = async (
     if (category) {
       product.category.slug = category.slug;
       product.category.title = category.title;
+    }
+    if (isSingleVariantProduct !== undefined) {
+      product.isSingleVariantProduct = isSingleVariantProduct;
     }
     console.log("Category: ", category);
     console.log("updated category: ", product.category);

@@ -2,6 +2,8 @@
 import { utapi } from "@/server/uploadthing";
 
 export const uploadNewFile = async (formData: FormData) => {
+  // console.log("uploadNewFile", formData);
+
   try {
     const file = formData.get("file") as File;
     if (!file) throw new Error("No file provided");

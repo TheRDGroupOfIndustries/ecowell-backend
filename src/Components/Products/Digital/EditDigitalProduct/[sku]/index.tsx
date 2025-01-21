@@ -1,6 +1,14 @@
 import CommonBreadcrumb from "@/CommonComponents/CommonBreadcrumb";
 import { Fragment, useState, useEffect } from "react";
-import { Col, Container, Row, Button } from "reactstrap";
+import {
+  Col,
+  Container,
+  Row,
+  Button,
+  FormGroup,
+  Label,
+  Input,
+} from "reactstrap";
 import GeneralForm from "../../AddDigitalProduct/GeneralForm";
 import VariantForm from "../../AddDigitalProduct/VariantForm";
 import AdditionalInfoForm from "../../AddDigitalProduct/AdditionalForm";
@@ -45,6 +53,7 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
     },
     brand: "",
     isNew: false,
+    isSingleVariantProduct: false,
     bestBefore: "",
   });
 
@@ -113,10 +122,12 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
         setLoading(true);
         const response = await axios.get(`/api/products/get/${editProductSku}`);
         const product = response.data;
-        console.log("Product:", product);
+        // console.log("Product:", product);
         //convert bestBefore to date in format bestBefore: 2024-11-13
-        let bestBeforeTemp = new Date(product.bestBefore).toISOString().split('T')[0];
-      
+        let bestBeforeTemp = new Date(product.bestBefore)
+          .toISOString()
+          .split("T")[0];
+
         setGeneralFormState({
           price: product.price,
           salePrice: product.salePrice,
@@ -131,6 +142,7 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
           brand: product.brand,
           isNew: product.isNew || false,
           bestBefore: bestBeforeTemp,
+          isSingleVariantProduct: product?.isSingleVariantProduct,
         });
         setVariants(product.variants);
         setAdditionalInfoStates(product.additionalInfo);
@@ -183,6 +195,7 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
       ...generalFormState,
       variants: variants,
       additionalInfo: additionalInfoStates,
+      // isSingleVariantProduct: generalFormState.isSingleVariantProduct,
     };
 
     try {
@@ -240,7 +253,51 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
             />
           </Col>
           <Col xl="6">
+            <div className="card mb-3">
+              <div className="card-body">
+                <FormGroup>
+                  <Label className="col-form-label pt-0">
+                    Single Variant Product
+                  </Label>
+                  <div className="m-checkbox-inline mb-0 custom-radio-ml d-flex gap-4 radio-animated">
+                    <Label className="d-block">
+                      <Input
+                        className="radio_animated"
+                        id="isSingleVariant-yes"
+                        type="radio"
+                        name="isSingleVariantProduct"
+                        value="true"
+                        checked={
+                          generalFormState.isSingleVariantProduct === true
+                        }
+                        onChange={() =>
+                          handleGeneralForm("isSingleVariantProduct", true)
+                        }
+                      />
+                      Yes
+                    </Label>
+                    <Label className="d-block">
+                      <Input
+                        className="radio_animated"
+                        id="isSingleVariant-no"
+                        type="radio"
+                        name="isSingleVariantProduct"
+                        value="false"
+                        checked={
+                          generalFormState.isSingleVariantProduct === false
+                        }
+                        onChange={() =>
+                          handleGeneralForm("isSingleVariantProduct", false)
+                        }
+                      />
+                      No
+                    </Label>
+                  </div>
+                </FormGroup>
+              </div>
+            </div>
             <VariantForm
+              isSingleVariantProduct={generalFormState.isSingleVariantProduct}
               variantProps={variantFormProps}
               handleVariantChange={handleVariantChange}
             />

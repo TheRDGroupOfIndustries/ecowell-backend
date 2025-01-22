@@ -16,11 +16,6 @@ interface HeroBannerFormProps {
 }
 
 const HeroBannerForm = ({ heroBanner, onUpdate }: HeroBannerFormProps) => {
-  const [uploadingStates, setUploadingStates] = useState({
-    heroBanner: false,
-    dailyRitual: false,
-    ingredients: new Array(3).fill(false),
-  });
   const [isUploading, setIsUploading] = useState(false);
 
   const handleImageUpload = async (
@@ -38,15 +33,7 @@ const HeroBannerForm = ({ heroBanner, onUpdate }: HeroBannerFormProps) => {
       const files = Array.from(target.files || []);
 
       if (files.length > 0) {
-        // Set uploading state
-        setUploadingStates((prev) => {
-          if (section === "ingredient" && typeof index === "number") {
-            const newIngredients = [...prev.ingredients];
-            newIngredients[index] = true;
-            return { ...prev, ingredients: newIngredients };
-          }
-          return { ...prev, [section]: true };
-        });
+        setIsUploading(true);
 
         const imagesFormData = new FormData();
         files.forEach((file) => {
@@ -61,15 +48,7 @@ const HeroBannerForm = ({ heroBanner, onUpdate }: HeroBannerFormProps) => {
         } catch (error) {
           toast.error("Image upload failed. Please try again later.");
         } finally {
-          // Reset uploading state
-          setUploadingStates((prev) => {
-            if (section === "ingredient" && typeof index === "number") {
-              const newIngredients = [...prev.ingredients];
-              newIngredients[index] = false;
-              return { ...prev, ingredients: newIngredients };
-            }
-            return { ...prev, [section]: false };
-          });
+          setIsUploading(false);
         }
       }
     };

@@ -52,6 +52,11 @@ export const MENUITEMS: any = [
         title: "Add Bulk Product",
         type: "link",
       },
+      {
+        path: "/products/digital/special-offer-products",
+        title: "Special Offer Products",
+        type: "link",
+      },
       // {
       //   title: "Physical",
       //   type: "sub",

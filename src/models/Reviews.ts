@@ -1,11 +1,11 @@
-import { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from "mongoose";
 
 // Define the ReviewSchema
 const ReviewSchema = new Schema(
   {
     productId: {
       type: Schema.Types.ObjectId,
-      ref: "NewProducts",
+      ref: "Products",
       required: true,
     },
     rating: {
@@ -14,15 +14,15 @@ const ReviewSchema = new Schema(
       max: 5,
       required: true,
     },
-    userId:{
+    userId: {
       type: String,
       required: true,
     },
-    username:{
+    username: {
       type: String,
       required: true,
     },
-    userAvatar:{
+    userAvatar: {
       type: String,
       required: true,
     },
@@ -34,6 +34,6 @@ const ReviewSchema = new Schema(
   { timestamps: true }
 );
 
-const Review = models.Review || model('Review', ReviewSchema);
+const Review = models.Review || model("Review", ReviewSchema);
 
 export default Review;

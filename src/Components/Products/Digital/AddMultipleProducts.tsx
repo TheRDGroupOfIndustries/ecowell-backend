@@ -136,6 +136,7 @@ const AddMultipleProducts = () => {
             "price",
             "brand",
             "sell_on_google_quantity",
+            "isSingleVariantProduct",
             // Add new fields here as optional for validation
             "heroBanner",
             "dailyRitual",
@@ -172,6 +173,8 @@ const AddMultipleProducts = () => {
             additionalInfo: parseAdditionalInfo(row["additionalInfo"]),
             ratings: Number(row["ratings"]) || 0,
             reviews_number: Number(row["reviews_number"]) || 0,
+            isSingleVariantProduct:
+              Boolean(row["isSingleVariantProduct"]) || false,
             variants: parseVariants(row["variants"]),
             // Parse new fields
             heroBanner: parseHeroBanner(row["heroBanner"]),
@@ -341,6 +344,8 @@ const AddMultipleProducts = () => {
       setIsSaving(false);
     }
   };
+
+  console.log("multiple products :", products);
 
   return (
     <Fragment>

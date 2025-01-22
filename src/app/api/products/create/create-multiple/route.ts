@@ -136,6 +136,7 @@ export const POST = async (request: NextRequest) => {
           discount: product.discount,
           sell_on_google_quantity,
           new: product.isNew || false,
+          isSingleVariantProduct: product.isSingleVariantProduct,
           variants: product.variants.map((variant: any) => ({
             ...variant,
             allergens: variant.allergens || [],

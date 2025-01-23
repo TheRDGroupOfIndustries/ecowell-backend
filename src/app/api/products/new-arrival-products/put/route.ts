@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { connectToMongoDB } from "@/lib/db";
-import SpecialOfferProducts from "@/models/SpecialOfferProducts";
+import NewArrivalProducts from "@/models/NewArrivalProducts";
 
 export const PUT = async (request: NextRequest) => {
   const {
-    specialOfferProducts,
-  }: { specialOfferProducts: { index: number; product: string }[] } =
+    newArrivalProducts,
+  }: { newArrivalProducts: { index: number; product: string }[] } =
     await request.json();
 
-  // console.log(specialOfferProducts);
+  // console.log(newArrivalProducts);
 
-  if (!Array.isArray(specialOfferProducts)) {
+  if (!Array.isArray(newArrivalProducts)) {
     return NextResponse.json(
       { error: "Invalid input format. Expected an array", success: false },
       { status: 400 }
@@ -19,7 +19,7 @@ export const PUT = async (request: NextRequest) => {
   }
 
   // Validate the input format
-  // const isValidInput = specialOfferProducts.every(
+  // const isValidInput = newArrivalProducts.every(
   //   (item) =>
   //     typeof item.index === "number" &&
   //     typeof item.product === "string" &&
@@ -41,16 +41,14 @@ export const PUT = async (request: NextRequest) => {
     await connectToMongoDB();
 
     // Delete existing special offer products
-    await SpecialOfferProducts.deleteMany({});
+    await NewArrivalProducts.deleteMany({});
 
     // Create new special offer products
-    const newSpecialOfferProducts = await SpecialOfferProducts.create(
-      specialOfferProducts
+    const newNewArrivalProducts = await NewArrivalProducts.create(
+      newArrivalProducts
     );
 
-    const populatedProducts = await SpecialOfferProducts.find({})
-      .select("index product -_id")
-      .sort("index");
+    const populatedProducts = await NewArrivalProducts.find({}).sort("index");
 
     revalidatePath(request.url);
 

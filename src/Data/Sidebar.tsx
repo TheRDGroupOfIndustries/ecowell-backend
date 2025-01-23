@@ -57,6 +57,16 @@ export const MENUITEMS: any = [
         title: "Special Offer Products",
         type: "link",
       },
+      {
+        path: "/products/digital/new-arrival-products",
+        title: "New Arrival Products",
+        type: "link",
+      },
+      {
+        path: "/products/digital/recommended-products",
+        title: "Recommended Product",
+        type: "link",
+      },
       // {
       //   title: "Physical",
       //   type: "sub",

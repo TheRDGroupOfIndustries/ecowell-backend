@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, JSX, useEffect, useState } from "react";
 import Link from "next/link";
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import {
@@ -340,6 +340,52 @@ export const ProductManagementUI: React.FC<ProductManagementUIProps> = ({
     setHasChanges(true);
   };
 
+  const renderTableRows = () => {
+    const rows: JSX.Element[] = [];
+
+    // First, handle existing products
+    specialOfferProducts.forEach((specialOffer, index) => {
+      const product = products.find((p) => p._id === specialOffer.product);
+
+      if (product) {
+        rows.push(
+          <SortableTableRow
+            key={product._id}
+            id={product._id}
+            index={index}
+            product={product}
+            onRemove={handleRemoveProduct}
+            exists={true}
+          />
+        );
+      } else {
+        // Handle non-existing product
+        rows.push(
+          <tr key={`missing-${specialOffer.product}`}>
+            <td colSpan={2} className="text-danger">
+              Missing Product (ID: {specialOffer.product})
+            </td>
+            <td colSpan={3} className="text-danger">
+              Product not found in database
+            </td>
+            <td>
+              <Button
+                color="danger"
+                size="sm"
+                className="dangerBtn px-3 py-2"
+                onClick={() => handleRemoveProduct(specialOffer.product)}
+              >
+                <AiOutlineDelete size={20} />
+              </Button>
+            </td>
+          </tr>
+        );
+      }
+    });
+
+    return rows;
+  };
+
   return (
     <Container fluid>
       {loading ? (
@@ -431,17 +477,17 @@ export const ProductManagementUI: React.FC<ProductManagementUIProps> = ({
                   strategy={verticalListSortingStrategy}
                 >
                   <Table>
-                    <tbody>
-                      {selectedProducts.map((product, index) => (
-                        <SortableTableRow
-                          key={product._id}
-                          id={product._id}
-                          index={index}
-                          product={product}
-                          onRemove={handleRemoveProduct}
-                        />
-                      ))}
-                    </tbody>
+                    <thead>
+                      <tr>
+                        <th>Position</th>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Brand</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>{renderTableRows()}</tbody>
                   </Table>
                 </SortableContext>
               </DndContext>
@@ -453,7 +499,13 @@ export const ProductManagementUI: React.FC<ProductManagementUIProps> = ({
   );
 };
 
-const SortableTableRow = ({ product, onRemove, id, index }: any) => {
+const SortableTableRow = ({
+  product,
+  onRemove,
+  id,
+  index,
+  exists = true,
+}: any) => {
   const {
     attributes,
     listeners,
@@ -475,6 +527,29 @@ const SortableTableRow = ({ product, onRemove, id, index }: any) => {
     touchAction: "none",
     zIndex: isDragging ? 1 : 0,
   };
+
+  if (!exists) {
+    return (
+      <tr style={{ backgroundColor: "#fff3f3" }}>
+        <td colSpan={2} className="text-danger">
+          Missing Product (ID: {id})
+        </td>
+        <td colSpan={3} className="text-danger">
+          Product not found in database
+        </td>
+        <td>
+          <Button
+            color="danger"
+            size="sm"
+            className="dangerBtn px-3 py-2"
+            onClick={() => onRemove(id)}
+          >
+            <AiOutlineDelete size={20} />
+          </Button>
+        </td>
+      </tr>
+    );
+  }
 
   return (
     <tr ref={setNodeRef} style={style}>

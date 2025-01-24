@@ -21,11 +21,28 @@ const errorResponse = (
   );
 };
 
-// Generate a simple 8-digit SKU based on the product count in the database
 const generateSequentialSku = async () => {
-  const productCount = await Products.countDocuments(); // Get the count of all products
-  const skuNumber = (productCount + 1).toString().padStart(8, "0"); // Increment and pad to 8 digits
-  return skuNumber;
+  let attempts = 0;
+  const maxAttempts = 10;
+
+  const productCount = await Products.countDocuments();
+  let baseSkuNumber = (productCount + 1).toString().padStart(8, "0");
+
+  while (attempts < maxAttempts) {
+    const existingProduct = await Products.findOne({ sku: baseSkuNumber });
+    if (!existingProduct) {
+      return baseSkuNumber;
+    }
+
+    const numericPart = parseInt(baseSkuNumber, 10) + 1;
+    baseSkuNumber = numericPart.toString().padStart(8, "0");
+
+    attempts++;
+  }
+
+  throw new Error(
+    `Unable to generate unique SKU after ${maxAttempts} attempts. System may need maintenance.`
+  );
 };
 
 export const POST = async (request: NextRequest) => {
@@ -123,7 +140,18 @@ export const POST = async (request: NextRequest) => {
     await connectToMongoDB();
 
     const slug = generateSlug(category.title);
-    const sku = await generateSequentialSku();
+
+    // Generate SKU with error handling
+    let sku;
+    try {
+      sku = await generateSequentialSku();
+    } catch (error: any) {
+      return errorResponse(
+        `SKU generation failed: ${error.message}`,
+        409, // Changed from 500 to 409 to indicate conflict
+        request
+      );
+    }
 
     let sell_on_google_quantity = 0;
     for (const variant of variants) {

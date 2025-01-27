@@ -23,15 +23,16 @@ const ProductListDigital = () => {
           image_link: product.variants[0].images[0],
           title: product.title,
           brand: product.brand,
+          salePrice: product.salePrice,
           price: product.price,
           category_slug: product.category.slug,
           sell_on_google_quantity: product.sell_on_google_quantity,
           variants_count: product.variants.length,
-          heroBanner: product.heroBanner ? "Yes" : "No",
-          dailyRitual: product.dailyRitual ? "Yes" : "No",
-          ingredientHighlights: product.ingredientHighlights
-            ? product.ingredientHighlights.length
-            : 0,
+          // heroBanner: product.heroBanner ? "Yes" : "No",
+          // dailyRitual: product.dailyRitual ? "Yes" : "No",
+          // ingredientHighlights: product.ingredientHighlights
+          //   ? product.ingredientHighlights.length
+          //   : 0,
         }));
         setProductListDigitalData(transformedData);
       } catch (error) {

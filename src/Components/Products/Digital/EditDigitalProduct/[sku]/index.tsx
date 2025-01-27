@@ -40,6 +40,9 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
 }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [isPosting, setIsPosting] = useState(false);
+  const [initialState, setInitialState] = useState<any>(null);
+  const [hasChanges, setHasChanges] = useState(false);
   // General Form
   const [generalFormState, setGeneralFormState] = useState({
     price: 0,
@@ -132,8 +135,6 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
     });
   };
 
-  const [isPosting, setIsPosting] = useState(false);
-
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
@@ -145,6 +146,33 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
         let bestBeforeTemp = new Date(product.bestBefore)
           .toISOString()
           .split("T")[0];
+
+        const initialData = {
+          generalForm: {
+            price: product.price,
+            salePrice: product.salePrice,
+            discount: product.discount || 0,
+            directions: product.directions,
+            ingredients: product.ingredients,
+            benefits: product.benefits,
+            faqs: product.faqs,
+            title: product.title,
+            description: product.description,
+            category: product.category,
+            brand: product.brand,
+            isNew: product.isNew || false,
+            bestBefore: bestBeforeTemp,
+            isSingleVariantProduct: product?.isSingleVariantProduct,
+            sku: product.sku || editProductSku, // Add this line
+            heroBanner: product.heroBanner,
+            dailyRitual: product.dailyRitual,
+            ingredientHighlights: product.ingredientHighlights,
+          },
+          variants: product.variants,
+          additionalInfo: product.additionalInfo,
+        };
+
+        setInitialState(initialData);
 
         setGeneralFormState({
           price: product.price,
@@ -178,6 +206,20 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
 
     fetchProductDetails();
   }, [editProductSku]);
+
+  useEffect(() => {
+    if (initialState) {
+      const currentState = {
+        generalForm: generalFormState,
+        variants: variants,
+        additionalInfo: additionalInfoStates,
+      };
+
+      const hasStateChanged =
+        JSON.stringify(currentState) !== JSON.stringify(initialState);
+      setHasChanges(hasStateChanged);
+    }
+  }, [generalFormState, variants, additionalInfoStates, initialState]);
 
   const handleUpdate = async () => {
     // Validate required fields
@@ -269,7 +311,8 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
             <button
               onClick={handleUpdate}
               className="btn btn-primary"
-              disabled={isPosting}
+              disabled={isPosting || !hasChanges}
+              style={{ cursor: isPosting || !hasChanges ? "not-allowed" : "" }}
             >
               {isPosting ? "Updating..." : "Update"}
             </button>

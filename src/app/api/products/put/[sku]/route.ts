@@ -43,7 +43,11 @@ export const PUT = async (
       heroBanner,
       dailyRitual,
       ingredientHighlights,
+      oldSku,
+      sku: newSku,
     }: {
+      oldSku?: string;
+      sku?: string;
       title?: string;
       description?: string;
       category?: { title: string; slug: string };
@@ -97,9 +101,28 @@ export const PUT = async (
 
     await connectToMongoDB();
 
-    const product = await Products.findOne({ sku });
+    // Check if new SKU already exists (if SKU is being changed)
+    if (newSku && newSku !== oldSku) {
+      const existingProduct = await Products.findOne({ sku: newSku });
+      if (existingProduct) {
+        return NextResponse.json(
+          { error: "Product with this SKU already exists", success: false },
+          { status: 400 }
+        );
+      }
+    }
+
+    const product = await Products.findOne({ sku: oldSku });
     if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Product not found", success: false },
+        { status: 404 }
+      );
+    }
+
+    // Update SKU if provided
+    if (newSku && newSku !== oldSku) {
+      product.sku = newSku;
     }
 
     if (variants) {
@@ -163,13 +186,18 @@ export const PUT = async (
     revalidatePath(request.url);
 
     return NextResponse.json(
-      { message: "Product updated successfully!", product },
+      {
+        message: "Product updated successfully!",
+        product,
+        skuUpdated: newSku && newSku !== oldSku ? true : false,
+        success: true,
+      },
       { status: 200 }
     );
   } catch (error) {
     console.error("Error updating product:", error);
     return NextResponse.json(
-      { error: "Failed to update product" },
+      { error: "Failed to update product", success: false },
       { status: 500 }
     );
   }

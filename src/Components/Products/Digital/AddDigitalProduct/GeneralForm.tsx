@@ -1,31 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import CommonCardHeader from "@/CommonComponents/CommonCardHeader";
 import { Card, CardBody, FormGroup, Input, Label } from "reactstrap";
-import MultiInputField from './MultiInputField';
-import FaqInputField from './FaqInputField';
-import { fetchCategories } from '@/lib/utils';
+import MultiInputField from "./MultiInputField";
+import FaqInputField from "./FaqInputField";
+import { fetchCategories } from "@/lib/utils";
 
-
-const GeneralForm = ({ generalFormState, handleGeneralForm }: {
+const GeneralForm = ({
+  generalFormState,
+  handleGeneralForm,
+}: {
   generalFormState: {
-    price: number,
-    salePrice: number,
-    discount: number,
-    directions: string[],
-    ingredients: string[],
-    benefits: string[],
-    faqs: { question: string; answer: string }[],
-    title: string,
-    description: string,
-    category: { title: string, slug: string },
-    brand: string,
+    price: number;
+    salePrice: number;
+    discount: number;
+    directions: string[];
+    ingredients: string[];
+    benefits: string[];
+    faqs: { question: string; answer: string }[];
+    title: string;
+    description: string;
+    category: { title: string; slug: string };
+    brand: string;
     // sell_on_google_quantity: number,
-    isNew: boolean,
-    bestBefore: string,
-  },
-  handleGeneralForm: (field: string, value: any) => void
+    isNew: boolean;
+    bestBefore: string;
+    sku: string;
+  };
+  handleGeneralForm: (field: string, value: any) => void;
 }) => {
-  const { price, salePrice, discount, directions, ingredients, benefits, faqs, title, description, category, brand, isNew, bestBefore } = generalFormState;
+  const {
+    price,
+    salePrice,
+    discount,
+    directions,
+    ingredients,
+    benefits,
+    faqs,
+    title,
+    description,
+    category,
+    brand,
+    isNew,
+    bestBefore,
+    sku,
+  } = generalFormState;
   useEffect(() => {
     console.log("bestBefore:", bestBefore);
   }, [bestBefore]);
@@ -34,13 +52,15 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
   //   { title: "Health", slug: "health" },
   //   { title: "Beauty", slug: "beauty" },
   // ];
-  const [categories, setCategories] = useState<{ title: string, slug: string }[]>([]);
+  const [categories, setCategories] = useState<
+    { title: string; slug: string }[]
+  >([]);
   useEffect(() => {
     if (price > 0 && salePrice > 0) {
       const calculatedDiscount = ((price - salePrice) / price) * 100;
-      handleGeneralForm('discount', calculatedDiscount);
+      handleGeneralForm("discount", calculatedDiscount);
     } else {
-      handleGeneralForm('discount', 0);
+      handleGeneralForm("discount", 0);
     }
   }, [price, salePrice]);
 
@@ -50,22 +70,34 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
         const fetchedCategories = await fetchCategories();
         setCategories(fetchedCategories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
     fetchCategoriesData();
   }, []);
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedCategory = categories.find(cat => cat.slug === e.target.value);
-    handleGeneralForm('category', selectedCategory);
+    const selectedCategory = categories.find(
+      (cat) => cat.slug === e.target.value
+    );
+    handleGeneralForm("category", selectedCategory);
   };
 
   return (
     <Card>
       <CommonCardHeader title="General" />
-      <CardBody className='mt-0 pt-0'>
+      <CardBody className="mt-0 pt-0">
         <div className="digital-add needs-validation">
+          <FormGroup>
+            <Label className="col-form-label">SKU</Label>
+            <Input
+              className="form-control"
+              type="text"
+              value={generalFormState.sku}
+              onChange={(e) => handleGeneralForm("sku", e.target.value)}
+              placeholder="Enter product SKU"
+            />
+          </FormGroup>
           <FormGroup>
             <Label className="col-form-label pt-0">
               <span>*</span> Title
@@ -74,7 +106,7 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
               id="title"
               type="text"
               value={title}
-              onChange={(e) => handleGeneralForm('title', e.target.value)}
+              onChange={(e) => handleGeneralForm("title", e.target.value)}
               required
             />
           </FormGroup>
@@ -87,7 +119,7 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
               rows={4}
               cols={12}
               value={description}
-              onChange={(e) => handleGeneralForm('description', e.target.value)}
+              onChange={(e) => handleGeneralForm("description", e.target.value)}
               required
             ></textarea>
           </FormGroup>
@@ -103,8 +135,10 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
               required
             >
               <option value="">--Select--</option>
-              {categories.map(cat => (
-                <option key={cat.slug} value={cat.slug}>{cat.title}</option>
+              {categories.map((cat) => (
+                <option key={cat.slug} value={cat.slug}>
+                  {cat.title}
+                </option>
               ))}
             </select>
           </FormGroup>
@@ -116,7 +150,7 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
               id="brand"
               type="text"
               value={brand}
-              onChange={(e) => handleGeneralForm('brand', e.target.value)}
+              onChange={(e) => handleGeneralForm("brand", e.target.value)}
               required
             />
           </FormGroup>
@@ -129,7 +163,8 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
               type="number"
               value={price}
               onChange={(e) => {
-                if (Number(e.target.value) >= 0) handleGeneralForm('price', parseFloat(e.target.value))
+                if (Number(e.target.value) >= 0)
+                  handleGeneralForm("price", parseFloat(e.target.value));
                 // handleGeneralForm('price', parseFloat(e.target.value))
               }}
               required
@@ -144,15 +179,25 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
               type="number"
               value={salePrice}
               onChange={(e) => {
-                if (Number(e.target.value) < price && Number(e.target.value) >= 0) handleGeneralForm('salePrice', parseFloat(e.target.value));
+                if (
+                  Number(e.target.value) < price &&
+                  Number(e.target.value) >= 0
+                )
+                  handleGeneralForm("salePrice", parseFloat(e.target.value));
               }}
               required
             />
           </FormGroup>
           <FormGroup>
             <Label className="col-form-label pt-0">Discount</Label>
-            <Input id="discount" type="number" value={discount.toFixed(2)} disabled />
+            <Input
+              id="discount"
+              type="number"
+              value={discount.toFixed(2)}
+              disabled
+            />
           </FormGroup>
+
           {/* <FormGroup>
             <Label className="col-form-label pt-0">
               <span>*</span> Sell on Google Quantity
@@ -176,7 +221,7 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
                   name="isNew"
                   value="true"
                   checked={isNew === true}
-                  onChange={() => handleGeneralForm('isNew', true)}
+                  onChange={() => handleGeneralForm("isNew", true)}
                 />
                 Yes
               </Label>
@@ -188,7 +233,7 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
                   name="isNew"
                   value="false"
                   checked={isNew === false}
-                  onChange={() => handleGeneralForm('isNew', false)}
+                  onChange={() => handleGeneralForm("isNew", false)}
                 />
                 No
               </Label>
@@ -201,13 +246,33 @@ const GeneralForm = ({ generalFormState, handleGeneralForm }: {
               type="date"
               value={bestBefore}
               onChange={(e) => {
-                handleGeneralForm('bestBefore', e.target.value)}}
+                handleGeneralForm("bestBefore", e.target.value);
+              }}
             />
           </FormGroup>
-          <MultiInputField label="Directions" items={directions} handleArrayChange={handleGeneralForm} fieldName='directions' />
-          <MultiInputField label="Ingredients" items={ingredients} handleArrayChange={handleGeneralForm} fieldName='ingredients' />
-          <MultiInputField label="Benefits" items={benefits} handleArrayChange={handleGeneralForm} fieldName='benefits' />
-          <FaqInputField label="FAQs" faqs={faqs} handleChange={handleGeneralForm} />
+          <MultiInputField
+            label="Directions"
+            items={directions}
+            handleArrayChange={handleGeneralForm}
+            fieldName="directions"
+          />
+          <MultiInputField
+            label="Ingredients"
+            items={ingredients}
+            handleArrayChange={handleGeneralForm}
+            fieldName="ingredients"
+          />
+          <MultiInputField
+            label="Benefits"
+            items={benefits}
+            handleArrayChange={handleGeneralForm}
+            fieldName="benefits"
+          />
+          <FaqInputField
+            label="FAQs"
+            faqs={faqs}
+            handleChange={handleGeneralForm}
+          />
         </div>
       </CardBody>
     </Card>

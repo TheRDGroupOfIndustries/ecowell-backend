@@ -59,6 +59,7 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
     isNew: false,
     isSingleVariantProduct: false,
     bestBefore: "",
+    sku: "", // Add this line
     // new fields
     heroBanner: {
       title: "",
@@ -160,7 +161,7 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
           isNew: product.isNew || false,
           bestBefore: bestBeforeTemp,
           isSingleVariantProduct: product?.isSingleVariantProduct,
-
+          sku: product.sku || editProductSku, // Add this line
           heroBanner: product.heroBanner,
           dailyRitual: product.dailyRitual,
           ingredientHighlights: product.ingredientHighlights,
@@ -188,6 +189,7 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
       "brand",
       "price",
       "bestBefore",
+      "sku", // Add this line
     ];
     const missingFields = requiredFields.filter((field) => {
       const keys = field.split(".");
@@ -216,7 +218,7 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
       ...generalFormState,
       variants: variants,
       additionalInfo: additionalInfoStates,
-      // isSingleVariantProduct: generalFormState.isSingleVariantProduct,
+      oldSku: editProductSku, // Add this line to track the original SKU
     };
 
     try {
@@ -224,13 +226,27 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
         `/api/products/put/${editProductSku}`,
         product
       );
-      console.log(response.data);
-      toast.success("Product updated successfully");
-      // Redirect to product list
-      router.push("/en/products/digital/digital-product-list");
-    } catch (error) {
+
+      if (!response.data.success) {
+        toast.error(response.data.error || "Failed to update product");
+        return;
+      }
+
+      // Show the specific success message from the API
+      toast.success(response.data.message || "Product updated successfully");
+
+      if (response.data.skuUpdated) {
+        router.push(
+          `/en/products/digital/digital-edit-product/${generalFormState.sku}`
+        );
+      } else {
+        router.push("/en/products/digital/digital-product-list");
+      }
+    } catch (error: any) {
       console.error("Error updating product:", error);
-      toast.error("Failed to update product");
+      const errorMessage =
+        error.response?.data?.error || "Failed to update product";
+      toast.error(errorMessage);
     } finally {
       setIsPosting(false);
     }
@@ -241,9 +257,7 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
     router.push("/en/products/digital/digital-product-list");
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
 
   return (
     <Fragment>

@@ -326,6 +326,7 @@ const EditDigitalProduct: React.FC<EditDigitalProductProps> = ({
         <Row className="product-adding">
           <Col xl="6">
             <GeneralForm
+              isEdit={true}
               generalFormState={generalFormState}
               handleGeneralForm={handleGeneralForm}
             />

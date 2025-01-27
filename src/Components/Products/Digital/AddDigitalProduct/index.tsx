@@ -52,6 +52,7 @@ const AddDigitalProduct = () => {
     bestBefore: "",
     sell_on_google_quantity: 0,
     isSingleVariantProduct: false,
+    sku: "",
 
     // new fields
     heroBanner: {
@@ -208,6 +209,7 @@ const AddDigitalProduct = () => {
       toast.success("Product created successfully");
       // Reset all fields
       setGeneralFormState({
+        sku: "",
         price: 0,
         salePrice: 0,
         discount: 0,
@@ -261,6 +263,7 @@ const AddDigitalProduct = () => {
   const handleCancel = () => {
     // Reset all fields
     setGeneralFormState({
+      sku: "",
       price: 0,
       salePrice: 0,
       discount: 0,

@@ -6,9 +6,11 @@ import FaqInputField from "./FaqInputField";
 import { fetchCategories } from "@/lib/utils";
 
 const GeneralForm = ({
+  isEdit = false,
   generalFormState,
   handleGeneralForm,
 }: {
+  isEdit?: boolean;
   generalFormState: {
     price: number;
     salePrice: number;
@@ -88,16 +90,18 @@ const GeneralForm = ({
       <CommonCardHeader title="General" />
       <CardBody className="mt-0 pt-0">
         <div className="digital-add needs-validation">
-          <FormGroup>
-            <Label className="col-form-label">SKU</Label>
-            <Input
-              className="form-control"
-              type="text"
-              value={generalFormState.sku}
-              onChange={(e) => handleGeneralForm("sku", e.target.value)}
-              placeholder="Enter product SKU"
-            />
-          </FormGroup>
+          {isEdit && (
+            <FormGroup>
+              <Label className="col-form-label">SKU</Label>
+              <Input
+                className="form-control"
+                type="text"
+                value={generalFormState.sku}
+                onChange={(e) => handleGeneralForm("sku", e.target.value)}
+                placeholder="Enter product SKU"
+              />
+            </FormGroup>
+          )}
           <FormGroup>
             <Label className="col-form-label pt-0">
               <span>*</span> Title
